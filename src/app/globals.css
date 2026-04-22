@@ -1,0 +1,110 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-heading);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --color-warm-50: #FFFAF7;
+  --color-warm-100: #FDF6F0;
+  --color-warm-200: #F5EBE3;
+  --color-warm-300: #E8DDD5;
+  --color-malina-500: #C2185B;
+  --color-malina-600: #AD1457;
+  --color-malina-700: #880E4F;
+}
+
+:root {
+  --background: #FDF6F0;
+  --foreground: #1A1A1A;
+  --card: #FFFAF7;
+  --card-foreground: #1A1A1A;
+  --popover: #FFFAF7;
+  --popover-foreground: #1A1A1A;
+  --primary: #C2185B;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F5EBE3;
+  --secondary-foreground: #1A1A1A;
+  --muted: #F5EBE3;
+  --muted-foreground: #6B5E5E;
+  --accent: #F5EBE3;
+  --accent-foreground: #1A1A1A;
+  --destructive: #DC2626;
+  --border: #E8DDD5;
+  --input: #E8DDD5;
+  --ring: #C2185B;
+  --radius: 0.625rem;
+  --font-heading: "Manrope", var(--font-sans);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  html {
+    @apply font-sans scroll-smooth;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Hero float — slow, gentle vertical drift */
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-14px) translateX(2px); }
+}
+
+/* Hero glow — subtle pulsing warm glow */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

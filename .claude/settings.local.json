@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src --no-import-alias --use-npm)",
+      "Read(//Users/artem/Desktop/**)",
+      "Bash(npx create-next-app@latest cafemalina-temp --typescript --tailwind --eslint --app --src --no-import-alias --use-npm)",
+      "Bash(npm cache:*)",
+      "Bash(rm -rf /Users/artem/.npm/_cacache/content-v2/sha512/d4/8b)",
+      "Bash(cp -r /Users/artem/Desktop/cafemalina-temp/* /Users/artem/Desktop/cafemalina/)",
+      "Bash(cp /Users/artem/Desktop/cafemalina-temp/.gitignore /Users/artem/Desktop/cafemalina/)",
+      "Bash(cp /Users/artem/Desktop/cafemalina-temp/.eslintrc* /Users/artem/Desktop/cafemalina/)",
+      "Bash(cp /Users/artem/Desktop/cafemalina-temp/eslint.config.mjs /Users/artem/Desktop/cafemalina/)",
+      "Bash(rm -rf /Users/artem/Desktop/cafemalina-temp)",
+      "Bash(npm install:*)",
+      "Bash(npx:*)",
+      "Bash(1:*)",
+      "Bash(yes)",
+      "Bash(xargs kill:*)",
+      "Bash(curl --noproxy localhost -s http://localhost:3000)",
+      "Bash(curl --noproxy localhost -s http://localhost:3000/menu)",
+      "Bash(node:*)",
+      "Bash(curl --noproxy localhost -s http://localhost:3000/test-cart)",
+      "Bash(curl --noproxy localhost -s 'http://localhost:3000/_next/static/chunks/src_0hfsds6._.js')",
+      "Bash(curl --noproxy localhost -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/menu)",
+      "Bash(curl:*)",
+      "Bash(npm run:*)",
+      "Bash(pkill -f 'next start')",
+      "Bash(gh auth:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
