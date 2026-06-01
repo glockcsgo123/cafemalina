@@ -431,6 +431,54 @@ export const menuItems: MenuItem[] = [
       { label: "40 см", price: 1050 },
     ],
   },
+  {
+    id: "pizza-29",
+    name: "Бургер",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/pizza-burger.jpg",
+    category: "pizza",
+    variants: [
+      { label: "32 см", price: 0 },
+      { label: "40 см", price: 0 },
+    ],
+  },
+  {
+    id: "pizza-30",
+    name: "Маргарита",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/pizza-margarita.jpg",
+    category: "pizza",
+    variants: [
+      { label: "32 см", price: 0 },
+      { label: "40 см", price: 0 },
+    ],
+  },
+  {
+    id: "pizza-31",
+    name: "Мексиканская",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/pizza-meksikanskaya.jpg",
+    category: "pizza",
+    variants: [
+      { label: "32 см", price: 0 },
+      { label: "40 см", price: 0 },
+    ],
+  },
+  {
+    id: "pizza-32",
+    name: "Тайская",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/pizza-tajskaya.jpg",
+    category: "pizza",
+    variants: [
+      { label: "32 см", price: 0 },
+      { label: "40 см", price: 0 },
+    ],
+  },
 
   // ========== Роллы ==========
   {
@@ -1640,7 +1688,7 @@ export const menuItems: MenuItem[] = [
     name: "Имбирь",
     description: "",
     price: 30,
-    image: "/images/sauce.jpg",
+    image: "/images/imbir.jpg",
     category: "sauces",
   },
   {
@@ -1648,7 +1696,7 @@ export const menuItems: MenuItem[] = [
     name: "Ореховый соус",
     description: "",
     price: 75,
-    image: "/images/sauce.jpg",
+    image: "/images/orehovyi-sous.jpg",
     category: "sauces",
   },
   {
@@ -1656,7 +1704,7 @@ export const menuItems: MenuItem[] = [
     name: "Соус спайси",
     description: "",
     price: 75,
-    image: "/images/sauce.jpg",
+    image: "/images/sous-spaysi.jpg",
     category: "sauces",
   },
   {
@@ -1664,7 +1712,7 @@ export const menuItems: MenuItem[] = [
     name: "Сливочный соус",
     description: "",
     price: 95,
-    image: "/images/sauce.jpg",
+    image: "/images/slivochnyi-sous.jpg",
     category: "sauces",
   },
 ];
