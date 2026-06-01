@@ -1671,7 +1671,7 @@ export const menuItems: MenuItem[] = [
     description: "Дубай, Аляска, Оваро, Тэмари, Сёко, Филадельфия с угрём, Фрай Эби hot, Хокай hot",
     price: 3120,
     weight: "54шт/1740г",
-    image: "/images/set-solnce.jpg",
+    image: "/images/placeholder-roll.svg",
     category: "sets",
   },
   {
@@ -1690,7 +1690,7 @@ export const menuItems: MenuItem[] = [
     name: "Medium",
     description: "",
     price: 750,
-    image: "/images/beer-medium.jpg",
+    image: "/images/placeholder-beer.svg",
     category: "beer-sets",
   },
   {
@@ -1698,7 +1698,7 @@ export const menuItems: MenuItem[] = [
     name: "Max",
     description: "",
     price: 1240,
-    image: "/images/beer-max.jpg",
+    image: "/images/placeholder-beer.svg",
     category: "beer-sets",
   },
 
@@ -1708,7 +1708,7 @@ export const menuItems: MenuItem[] = [
     name: "Чай",
     description: "",
     price: 50,
-    image: "/images/drink-tea.jpg",
+    image: "/images/placeholder-drink.svg",
     category: "drinks",
   },
   {
@@ -1716,7 +1716,7 @@ export const menuItems: MenuItem[] = [
     name: "Чайник",
     description: "",
     price: 175,
-    image: "/images/drink-teapot.jpg",
+    image: "/images/placeholder-drink.svg",
     category: "drinks",
   },
   {
@@ -1724,7 +1724,7 @@ export const menuItems: MenuItem[] = [
     name: "Кофе эспрессо",
     description: "",
     price: 90,
-    image: "/images/drink-espresso.jpg",
+    image: "/images/placeholder-drink.svg",
     category: "drinks",
   },
   {
@@ -1732,7 +1732,7 @@ export const menuItems: MenuItem[] = [
     name: "Кофе американо",
     description: "",
     price: 100,
-    image: "/images/drink-americano.jpg",
+    image: "/images/placeholder-drink.svg",
     category: "drinks",
   },
   {
@@ -1740,7 +1740,7 @@ export const menuItems: MenuItem[] = [
     name: "Кофе капучино",
     description: "",
     price: 120,
-    image: "/images/drink-cappuccino.jpg",
+    image: "/images/placeholder-drink.svg",
     category: "drinks",
   },
   {
@@ -1748,7 +1748,7 @@ export const menuItems: MenuItem[] = [
     name: "Кофе латте",
     description: "",
     price: 130,
-    image: "/images/drink-latte.jpg",
+    image: "/images/placeholder-drink.svg",
     category: "drinks",
   },
 
