@@ -953,7 +953,7 @@ export const menuItems: MenuItem[] = [
     price: 485,
     weight: "250г",
     image: "/images/status.jpg",
-    category: "baked-rolls",
+    category: "sets",
   },
   {
     id: "baked-11",
@@ -1194,11 +1194,11 @@ export const menuItems: MenuItem[] = [
   {
     id: "hot-6",
     name: "Самурай",
-    description: "сыр сливочный, креветка темпура, оружец, сырный соус, унаги, икра масаго",
+    description: "сыр сливочный, креветка темпура, огурец, сырный соус, унаги, икра масаго",
     price: 485,
     weight: "245г",
     image: "/images/samurai.jpg",
-    category: "hot-rolls",
+    category: "sets",
   },
   {
     id: "hot-7",
