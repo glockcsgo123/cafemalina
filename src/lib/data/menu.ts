@@ -1791,7 +1791,7 @@ export const menuItems: MenuItem[] = [
     description: "",
     price: 35,
     weight: "50г",
-    image: "/images/soevyi-sous.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
@@ -1809,7 +1809,7 @@ export const menuItems: MenuItem[] = [
     description: "",
     price: 30,
     weight: "30г",
-    image: "/images/imbir.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
@@ -1818,7 +1818,7 @@ export const menuItems: MenuItem[] = [
     description: "",
     price: 75,
     weight: "50г",
-    image: "/images/orehovyi-sous.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
@@ -1827,7 +1827,7 @@ export const menuItems: MenuItem[] = [
     description: "",
     price: 75,
     weight: "50г",
-    image: "/images/sous-spaysi.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
@@ -1836,7 +1836,7 @@ export const menuItems: MenuItem[] = [
     description: "",
     price: 95,
     weight: "50г",
-    image: "/images/slivochnyi-sous.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
 ];
