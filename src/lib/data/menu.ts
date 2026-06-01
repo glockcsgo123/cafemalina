@@ -847,6 +847,30 @@ export const menuItems: MenuItem[] = [
     image: "/images/teriyaki-maki.jpg",
     category: "rolls",
   },
+  {
+    id: "roll-58",
+    name: "Аязава",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/ayazava.jpg",
+    category: "rolls",
+  },
+  {
+    id: "roll-59",
+    name: "Классик",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/klassik.jpg",
+    category: "rolls",
+  },
+  {
+    id: "roll-60",
+    name: "Тахира",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/tahira.jpg",
+    category: "rolls",
+  },
 
   // ========== Запечённые роллы ==========
   {
@@ -1007,6 +1031,14 @@ export const menuItems: MenuItem[] = [
     description: "", // [ЦЕНА?]
     price: 445,
     image: "/images/grand-chiken-zapechennyi.jpg",
+    category: "baked-rolls",
+  },
+  {
+    id: "baked-21",
+    name: "Маки гриль",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/maки-gril.jpg",
     category: "baked-rolls",
   },
 
@@ -1359,6 +1391,22 @@ export const menuItems: MenuItem[] = [
     description: "", // [ЦЕНА?]
     price: 1800,
     image: "/images/set-yakudza.jpg",
+    category: "sets",
+  },
+  {
+    id: "set-12",
+    name: "Сет Эби",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/ebi-set.jpg",
+    category: "sets",
+  },
+  {
+    id: "set-13",
+    name: "Сет Эгоист 2",
+    description: "", // [ЦЕНА?]
+    price: 0,
+    image: "/images/egoist-set.jpg",
     category: "sets",
   },
 
