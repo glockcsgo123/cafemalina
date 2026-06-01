@@ -436,49 +436,49 @@ export const menuItems: MenuItem[] = [
   {
     id: "pizza-29",
     name: "Бургер",
-    description: "", // [ЦЕНА?]
-    price: 0,
+    description: "курица копченая, охотничьи колбаски, бекон, огурцы маринованные, шампиньоны, лук белый, сыр моцарелла, соус белый, соус бургер",
+    price: 750,
     image: "/images/pizza-burger.jpg",
     category: "pizza",
     variants: [
-      { label: "32 см", price: 0 },
-      { label: "40 см", price: 0 },
+      { label: "32 см", price: 750 },
+      { label: "40 см", price: 950 },
     ],
   },
   {
     id: "pizza-30",
     name: "Маргарита",
-    description: "", // [ЦЕНА?]
-    price: 0,
+    description: "помидоры, сыр моцарелла, соус фирменный",
+    price: 630,
     image: "/images/pizza-margarita.jpg",
     category: "pizza",
     variants: [
-      { label: "32 см", price: 0 },
-      { label: "40 см", price: 0 },
+      { label: "32 см", price: 630 },
+      { label: "40 см", price: 790 },
     ],
   },
   {
     id: "pizza-31",
     name: "Мексиканская",
-    description: "", // [ЦЕНА?]
-    price: 0,
+    description: "бекон, охотничьи колбаски, пепперони, сыр моцарелла, перец болгарский, соус фирменный (добавим халапеньо по желанию)",
+    price: 750,
     image: "/images/pizza-meksikanskaya.jpg",
     category: "pizza",
     variants: [
-      { label: "32 см", price: 0 },
-      { label: "40 см", price: 0 },
+      { label: "32 см", price: 750 },
+      { label: "40 см", price: 950 },
     ],
   },
   {
     id: "pizza-32",
     name: "Тайская",
-    description: "", // [ЦЕНА?]
-    price: 0,
+    description: "курица жареная, сыр моцарелла, лук красный, перец болгарский, соус белый, соус чили-сладкий",
+    price: 750,
     image: "/images/pizza-tajskaya.jpg",
     category: "pizza",
     variants: [
-      { label: "32 см", price: 0 },
-      { label: "40 см", price: 0 },
+      { label: "32 см", price: 750 },
+      { label: "40 см", price: 950 },
     ],
   },
 
@@ -851,7 +851,7 @@ export const menuItems: MenuItem[] = [
     description: "сыр сливочный, креветка темпура, масаго, салат чука, соус ореховый",
     price: 445,
     weight: "200г",
-    image: "/images/naomi-maki.jpg",
+    image: "/images/placeholder-roll.svg",
     category: "rolls",
   },
   {
@@ -860,7 +860,7 @@ export const menuItems: MenuItem[] = [
     description: "терияки",
     price: 165,
     weight: "100г",
-    image: "/images/teriyaki-maki.jpg",
+    image: "/images/placeholder-roll.svg",
     category: "rolls",
   },
 
@@ -1758,7 +1758,7 @@ export const menuItems: MenuItem[] = [
     name: "Соус чесночный",
     description: "",
     price: 35,
-    image: "/images/sauce.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
@@ -1766,7 +1766,7 @@ export const menuItems: MenuItem[] = [
     name: "Соус кисло-сладкий",
     description: "",
     price: 35,
-    image: "/images/sauce.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
@@ -1774,7 +1774,7 @@ export const menuItems: MenuItem[] = [
     name: "Соус томатный",
     description: "",
     price: 35,
-    image: "/images/sauce.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
@@ -1782,7 +1782,7 @@ export const menuItems: MenuItem[] = [
     name: "Соус сырный",
     description: "",
     price: 35,
-    image: "/images/sauce.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
@@ -1800,7 +1800,7 @@ export const menuItems: MenuItem[] = [
     description: "",
     price: 30,
     weight: "15г",
-    image: "/images/sauce.jpg",
+    image: "/images/placeholder-sauce.svg",
     category: "sauces",
   },
   {
