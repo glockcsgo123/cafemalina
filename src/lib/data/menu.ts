@@ -422,18 +422,6 @@ export const menuItems: MenuItem[] = [
     ],
   },
   {
-    id: "pizza-28",
-    name: "Чеддер с говядиной",
-    description: "говядина, моцарелла, чеддер, перец болгарский, лук, огурцы солёные, лук зелёный, соус фирменный",
-    price: 880,
-    image: "/images/pizza-cheder.jpg",
-    category: "pizza",
-    variants: [
-      { label: "32 см", price: 880 },
-      { label: "40 см", price: 1050 },
-    ],
-  },
-  {
     id: "pizza-29",
     name: "Бургер",
     description: "курица копченая, охотничьи колбаски, бекон, огурцы маринованные, шампиньоны, лук белый, сыр моцарелла, соус белый, соус бургер",
@@ -479,6 +467,18 @@ export const menuItems: MenuItem[] = [
     variants: [
       { label: "32 см", price: 750 },
       { label: "40 см", price: 950 },
+    ],
+  },
+  {
+    id: "pizza-28",
+    name: "Чеддер с говядиной",
+    description: "говядина, моцарелла, чеддер, перец болгарский, лук, огурцы солёные, лук зелёный, соус фирменный",
+    price: 880,
+    image: "/images/placeholder-pizza.svg",
+    category: "pizza",
+    variants: [
+      { label: "32 см", price: 880 },
+      { label: "40 см", price: 1050 },
     ],
   },
 
