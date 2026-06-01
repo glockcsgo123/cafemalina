@@ -500,10 +500,11 @@ export const menuItems: MenuItem[] = [
   {
     id: "roll-3",
     name: "Филадельфия XL",
-    description: "", // [ЦЕНА?]
-    price: 555,
+    description: "Филадельфия, Канада, Дракон",
+    price: 1380,
+    weight: "24шт/660г",
     image: "/images/filadelfiya-xl.jpg",
-    category: "rolls",
+    category: "sets",
   },
   {
     id: "roll-4",
@@ -987,7 +988,7 @@ export const menuItems: MenuItem[] = [
     description: "",
     price: 485,
     image: "/images/status.jpg",
-    category: "baked-rolls",
+    category: "sets",
   },
   {
     id: "baked-11",
@@ -1117,7 +1118,7 @@ export const menuItems: MenuItem[] = [
     description: "",
     price: 485,
     image: "/images/samurai.jpg",
-    category: "hot-rolls",
+    category: "sets",
   },
   {
     id: "hot-7",
