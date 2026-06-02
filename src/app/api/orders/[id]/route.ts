@@ -13,8 +13,8 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await req.json();
-    const orders = readOrders();
-    const idx = orders.findIndex((o: { id: string }) => o.id === id);
+    const orders = readOrders() as { id: string; [k: string]: unknown }[];
+    const idx = orders.findIndex((o) => o.id === id);
     if (idx === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
     orders[idx] = { ...orders[idx], ...body };
     writeOrders(orders);
