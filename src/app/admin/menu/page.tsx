@@ -92,6 +92,7 @@ export default function AdminMenuPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
+        credentials: "same-origin",
       });
       const newItem = await res.json();
       setItems((prev) => [...prev, newItem]);
@@ -100,6 +101,7 @@ export default function AdminMenuPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
+        credentials: "same-origin",
       });
       const updated = await res.json();
       setItems((prev) => prev.map((i) => (i.id === updated.id ? updated : i)));
@@ -109,20 +111,34 @@ export default function AdminMenuPage() {
   };
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/menu/${id}`, { method: "DELETE" });
+    await fetch(`/api/menu/${id}`, { method: "DELETE", credentials: "same-origin" });
     setItems((prev) => prev.filter((i) => i.id !== id));
     setDeleteId(null);
   };
 
   const toggleFlag = async (item: MenuItem, flag: "recommended" | "isHit") => {
-    const updated = { ...item, [flag]: !item[flag] };
-    const res = await fetch(`/api/menu/${item.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updated),
-    });
-    const saved = await res.json();
-    setItems((prev) => prev.map((i) => (i.id === saved.id ? saved : i)));
+    // Оптимистично обновляем UI сразу
+    const newValue = !item[flag];
+    setItems((prev) =>
+      prev.map((i) => (i.id === item.id ? { ...i, [flag]: newValue } : i))
+    );
+    try {
+      const updated = { ...item, [flag]: newValue };
+      const res = await fetch(`/api/menu/${item.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+        credentials: "same-origin",
+      });
+      if (!res.ok) throw new Error(`${res.status}`);
+      const saved = await res.json();
+      setItems((prev) => prev.map((i) => (i.id === saved.id ? saved : i)));
+    } catch {
+      // Откат если сервер вернул ошибку
+      setItems((prev) =>
+        prev.map((i) => (i.id === item.id ? item : i))
+      );
+    }
   };
 
   return (

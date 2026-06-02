@@ -103,6 +103,7 @@ export const menuItems: MenuItem[] = [
     price: 680,
     image: "/images/margarita-s-vetchinoi.jpg",
     category: "pizza",
+    isHit: true,
     variants: [
       { label: "32 см", price: 680 },
       { label: "40 см", price: 850 },
@@ -116,6 +117,7 @@ export const menuItems: MenuItem[] = [
     image: "/images/pepperoni.jpg",
     category: "pizza",
     recommended: true,
+    isHit: true,
     variants: [
       { label: "32 см", price: 680 },
       { label: "40 см", price: 850 },
@@ -492,6 +494,7 @@ export const menuItems: MenuItem[] = [
     image: "/images/filadelfiya.jpg",
     category: "rolls",
     recommended: true,
+    isHit: true,
   },
   {
     id: "roll-2",
@@ -883,6 +886,7 @@ export const menuItems: MenuItem[] = [
     weight: "260г",
     image: "/images/vatikan.jpg",
     category: "baked-hot-rolls",
+    recommended: true,
   },
   {
     id: "baked-3",
@@ -892,6 +896,7 @@ export const menuItems: MenuItem[] = [
     weight: "260г",
     image: "/images/dinamit.jpg",
     category: "baked-hot-rolls",
+    isHit: true,
   },
   {
     id: "baked-4",
@@ -1302,6 +1307,7 @@ export const menuItems: MenuItem[] = [
     weight: "240г",
     image: "/images/dabl-losos-premium.jpg",
     category: "premium-rolls",
+    isHit: true,
   },
   {
     id: "prem-2",
@@ -1320,6 +1326,7 @@ export const menuItems: MenuItem[] = [
     weight: "290г",
     image: "/images/kanada-premium.jpg",
     category: "premium-rolls",
+    recommended: true,
   },
   {
     id: "prem-4",
@@ -1450,6 +1457,7 @@ export const menuItems: MenuItem[] = [
     weight: "32шт/915г",
     image: "/images/set-zharennyi-khit.jpg",
     category: "sets",
+    isHit: true,
   },
   {
     id: "set-2",

@@ -19,7 +19,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { formatPrice } from "@/lib/utils";
 
 export default function HomePage() {
-  const popularItems = menuItems.filter((item) => item.category === "popular");
+  const popularItems = menuItems.filter((item) => item.isHit);
 
   return (
     <>
