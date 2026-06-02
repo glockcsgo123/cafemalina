@@ -91,7 +91,7 @@ export const menuItems: MenuItem[] = [
     name: "Пивной сет Medium",
     description: "",
     price: 750,
-    image: "/images/beer-medium.jpg",
+    image: "/images/placeholder-beer.svg",
     category: "popular",
   },
 
