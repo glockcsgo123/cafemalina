@@ -953,7 +953,7 @@ export const menuItems: MenuItem[] = [
     description: "сыр сливочный, лосось, огурец, кунжут, унаги, сладкий чилли",
     price: 485,
     weight: "250г",
-    image: "/images/status.jpg",
+    image: "/images/placeholder-roll.svg",
     category: "rolls",
   },
   {
@@ -1198,7 +1198,7 @@ export const menuItems: MenuItem[] = [
     description: "сыр сливочный, креветка темпура, огурец, сырный соус, унаги, икра масаго",
     price: 485,
     weight: "245г",
-    image: "/images/samurai.jpg",
+    image: "/images/placeholder-roll.svg",
     category: "rolls",
   },
   {

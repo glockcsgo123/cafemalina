@@ -12,18 +12,21 @@ import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 
 export default function MenuPage() {
-  const [activeCategory, setActiveCategory] = useState("all");
+  // activeFilter — what the user clicked (controls content: grouped-all vs single category)
+  const [activeFilter, setActiveFilter] = useState("all");
+  // scrollHighlight — which tab is highlighted while scrolling in "all" mode (never changes content)
+  const [scrollHighlight, setScrollHighlight] = useState("all");
+
   const [searchQuery, setSearchQuery] = useState("");
   const [modalItem, setModalItem] = useState<MenuItem | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const totalItems = useCartStore(selectTotalItems);
   const totalPrice = useCartStore(selectTotalPrice);
 
   const isSearching = searchQuery.trim().length > 0;
+  const isAllMode = activeFilter === "all";
 
-  // Search results
   const searchResults = isSearching
     ? menuItems.filter(
         (item) =>
@@ -33,63 +36,66 @@ export default function MenuPage() {
       )
     : [];
 
-  const groupedByCategory = !isSearching
-    ? categories
-        .filter((c) => c.id !== "popular")
-        .map((cat) => ({
-          ...cat,
-          items: menuItems.filter((item) => item.category === cat.id),
-        }))
-        .filter((group) => group.items.length > 0)
-    : null;
+  const groupedByCategory = categories
+    .filter((c) => c.id !== "popular")
+    .map((cat) => ({
+      ...cat,
+      items: menuItems.filter((item) => item.category === cat.id),
+    }))
+    .filter((group) => group.items.length > 0);
 
-  const filteredItems =
-    activeCategory === "all"
-      ? menuItems.filter((item) => item.category !== "popular")
-      : menuItems.filter((item) => item.category === activeCategory);
+  const filteredItems = menuItems.filter(
+    (item) => item.category === activeFilter
+  );
 
-  // Intersection Observer — auto-update active tab on scroll
-  const handleCategorySelect = useCallback(
-    (id: string) => {
-      setActiveCategory(id);
-      if (id === "all") {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        return;
-      }
+  // The tab bar shows scrollHighlight when in all-mode, otherwise activeFilter
+  const activeTabId = isAllMode ? scrollHighlight : activeFilter;
+
+  const handleCategorySelect = useCallback((id: string) => {
+    setActiveFilter(id);
+    setScrollHighlight(id);
+
+    if (id === "all") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    // Scroll to section (only visible when switching FROM filtered view to all+scroll)
+    // When in all-mode, jump directly to section
+    requestAnimationFrame(() => {
       const el = sectionRefs.current[id];
       if (el) {
         const offset = 120;
         const top = el.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: "smooth" });
       }
-    },
-    []
-  );
+    });
+  }, []);
 
+  // IntersectionObserver — only runs in "all" mode, only updates scrollHighlight (never activeFilter)
   useEffect(() => {
-    if (isSearching || activeCategory !== "all") return;
-
-    observerRef.current?.disconnect();
+    if (isSearching || !isAllMode) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveCategory(entry.target.id || "all");
-            break;
-          }
+        // Find the topmost intersecting section
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+        if (visible.length > 0) {
+          setScrollHighlight(visible[0].target.id || "all");
         }
       },
-      { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+      { rootMargin: "-20% 0px -70% 0px", threshold: 0 }
     );
 
-    observerRef.current = observer;
     Object.values(sectionRefs.current).forEach((el) => {
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, [isSearching, activeCategory]);
+    // intentionally no activeFilter/scrollHighlight in deps — observer never changes filter
+  }, [isSearching, isAllMode]);
 
   return (
     <>
@@ -126,10 +132,10 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {/* Category tabs — hidden during search */}
+      {/* Category tabs */}
       {!isSearching && (
         <CategoryTabs
-          activeCategory={activeCategory}
+          activeCategory={activeTabId}
           onSelect={handleCategorySelect}
         />
       )}
@@ -156,7 +162,8 @@ export default function MenuPage() {
               </div>
             )}
           </div>
-        ) : activeCategory === "all" && groupedByCategory ? (
+        ) : isAllMode ? (
+          /* All categories grouped view */
           <div className="space-y-12">
             {groupedByCategory.map((group) => (
               <section
@@ -189,6 +196,7 @@ export default function MenuPage() {
             ))}
           </div>
         ) : (
+          /* Single category filtered view */
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {filteredItems.map((item) => (
               <MenuCard
@@ -224,7 +232,6 @@ export default function MenuPage() {
         </div>
       )}
 
-      {/* Item modal */}
       <MenuItemModal item={modalItem} onClose={() => setModalItem(null)} />
     </>
   );
