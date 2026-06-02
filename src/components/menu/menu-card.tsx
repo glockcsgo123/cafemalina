@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Minus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
+import Image from "next/image";
 import { MenuItem } from "@/lib/data/menu";
 import { useCartStore } from "@/lib/store/cart";
-import { formatPrice } from "@/lib/utils";
 
 interface MenuCardProps {
   item: MenuItem;
@@ -31,69 +31,73 @@ export function MenuCard({ item, onOpenModal }: MenuCardProps) {
   );
 
   const handleAdd = () => {
-    const cartName = hasVariants
-      ? `${item.name} (${item.variants![selectedVariant].label})`
-      : item.name;
-
     addItem({
       id: cartId,
-      name: cartName,
+      name: hasVariants
+        ? `${item.name} (${item.variants![selectedVariant].label})`
+        : item.name,
       price: currentPrice,
       image: item.image,
     });
   };
 
   return (
-    <div className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-malina-500/20 transition-all duration-200">
-      {/* Image — click opens modal */}
+    <div className="flex flex-col rounded-2xl overflow-hidden bg-card border border-border hover:shadow-md hover:border-malina-500/20 transition-all duration-200 h-full">
+      {/* Фото */}
       <button
         type="button"
         onClick={() => onOpenModal?.(item)}
-        className="relative aspect-[4/3] overflow-hidden bg-warm-200 w-full text-left focus:outline-none"
+        className="relative aspect-[4/3] w-full overflow-hidden bg-warm-200 focus:outline-none shrink-0"
       >
-        <img
+        <Image
           src={item.image}
           alt={item.name}
-          loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+          fill
+          sizes="(max-width: 768px) 50vw, 25vw"
+          className="object-cover object-center hover:scale-105 transition-transform duration-300"
         />
-        {/* Weight badge */}
+        {/* Бейдж веса */}
         {item.weight && (
-          <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium px-2 py-1 rounded-md">
+          <span className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-0.5 rounded-md">
             {item.weight}
-          </div>
+          </span>
         )}
+        {/* Бейдж цены */}
+        <span className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-xs font-bold px-2 py-1 rounded-lg shadow-sm">
+          {currentPrice} ₽
+        </span>
       </button>
 
-      {/* Content */}
-      <div className="p-4 flex flex-col">
+      {/* Контент */}
+      <div className="flex flex-col flex-1 p-3 gap-2">
         <button
           type="button"
           onClick={() => onOpenModal?.(item)}
           className="text-left focus:outline-none"
         >
-          <h3 className="font-bold text-[15px] leading-tight mb-1.5 hover:text-malina-500 transition-colors">
+          <p className="font-semibold text-sm leading-tight line-clamp-2 hover:text-malina-500 transition-colors">
             {item.name}
-          </h3>
+          </p>
         </button>
+
         {item.description && (
-          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-3 flex-1">
+          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
             {item.description}
           </p>
         )}
 
-        {/* Variant selector */}
+        {/* Варианты размеров */}
         {hasVariants && (
-          <div className="flex gap-1 mb-3">
+          <div className="flex gap-1 flex-wrap">
             {item.variants!.map((v, i) => (
               <button
                 key={v.label}
                 type="button"
                 onClick={() => setSelectedVariant(i)}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                   selectedVariant === i
-                    ? "bg-malina-500 text-white"
-                    : "bg-secondary text-muted-foreground hover:bg-warm-200 cursor-pointer"
+                    ? "bg-[#BE1E5A] text-white border-[#BE1E5A]"
+                    : "border-border text-muted-foreground hover:border-[#BE1E5A]/40"
                 }`}
               >
                 {v.label}
@@ -102,39 +106,39 @@ export function MenuCard({ item, onOpenModal }: MenuCardProps) {
           </div>
         )}
 
-        {/* Price + Action */}
-        <div className="flex items-center justify-between gap-2 mt-auto min-w-0">
-          <span className="text-lg font-extrabold tracking-tight whitespace-nowrap">
-            {formatPrice(currentPrice)}
+        {/* Цена + кнопка */}
+        <div className="flex items-center justify-between gap-2 mt-auto">
+          <span className="font-bold text-sm whitespace-nowrap">
+            {currentPrice} ₽
           </span>
 
           {quantity === 0 ? (
             <button
               type="button"
               onClick={handleAdd}
-              className="flex items-center gap-1.5 bg-malina-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl hover:bg-malina-600 active:scale-95 transition-all shadow-sm whitespace-nowrap flex-shrink-0"
+              className="flex items-center gap-1 bg-[#BE1E5A] text-white text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap flex-shrink-0 active:scale-95 transition-transform"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               В корзину
             </button>
           ) : (
-            <div className="flex items-center gap-0.5 bg-secondary rounded-xl p-1">
+            <div className="flex items-center gap-0.5 bg-secondary rounded-xl p-1 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => updateQuantity(cartId, quantity - 1)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-card transition-colors"
+                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-card transition-colors"
               >
-                <Minus className="w-3.5 h-3.5" />
+                <Minus className="w-3 h-3" />
               </button>
-              <span className="w-8 text-center text-sm font-bold">
+              <span className="w-6 text-center text-sm font-bold">
                 {quantity}
               </span>
               <button
                 type="button"
                 onClick={() => updateQuantity(cartId, quantity + 1)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-card transition-colors"
+                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-card transition-colors"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-3 h-3" />
               </button>
             </div>
           )}
