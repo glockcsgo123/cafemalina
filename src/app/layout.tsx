@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CallButton } from "@/components/CallButton";
 import { CookieBanner } from "@/components/CookieBanner";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { siteConfig } from "@/lib/data/site";
 
 const inter = Inter({
@@ -31,10 +32,11 @@ export default function RootLayout({
     <html lang="ru" className={`${inter.variable} ${manrope.variable} h-full`}>
       <body className="min-h-full flex flex-col">
         <Header />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pb-16 md:pb-0">{children}</main>
         <Footer />
         <CallButton />
         <CookieBanner />
+        <MobileNav />
       </body>
     </html>
   );
