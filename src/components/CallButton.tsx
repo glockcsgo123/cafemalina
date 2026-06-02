@@ -11,7 +11,7 @@ export function CallButton() {
   return (
     <a
       href="tel:+79107403111"
-      className="fixed bottom-8 right-6 z-50 group flex items-center gap-0 hover:gap-3 overflow-hidden transition-all duration-300"
+      className="fixed bottom-20 right-4 z-50 md:bottom-8 md:right-6 group flex items-center gap-0 hover:gap-3 overflow-hidden transition-all duration-300"
       aria-label="Позвонить"
     >
       {/* Tooltip */}
@@ -19,7 +19,7 @@ export function CallButton() {
         +7 (910) 740-31-11
       </span>
       {/* Button */}
-      <span className="w-14 h-14 rounded-full bg-[#BE1E5A] flex items-center justify-center shadow-[0_4px_20px_rgba(190,30,90,0.4)] hover:shadow-[0_6px_25px_rgba(190,30,90,0.5)] hover:scale-110 hover:bg-malina-600 transition-all duration-200 shrink-0">
+      <span className="w-14 h-14 rounded-full bg-[#BE1E5A] flex items-center justify-center hover:scale-110 hover:bg-malina-600 transition-all duration-200 shrink-0">
         <Phone className="w-6 h-6 text-white" />
       </span>
     </a>
