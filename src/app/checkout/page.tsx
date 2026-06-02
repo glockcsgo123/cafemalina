@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Send, Info, Banknote, CreditCard, Smartphone, Plus, Minus } from "lucide-react";
+import { ArrowLeft, Send, Info, Plus, Minus, Clock } from "lucide-react";
 import { useCartStore, selectTotalItems, selectTotalPrice } from "@/lib/store/cart";
 import { menuItems } from "@/lib/data/menu";
 import { formatPrice } from "@/lib/utils";
@@ -40,15 +40,29 @@ export default function CheckoutPage() {
     comment: "",
   });
   const [persons, setPersons] = useState(1);
+  const [selectedPayment, setSelectedPayment] = useState("cash");
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  // Upsell items: soy sauce + all drinks
-  const upsellItems = menuItems.filter(
-    (item) => item.id === "sauce-5" || item.category === "drinks"
-  );
+  // Upsell: soy sauce first, then drinks
+  const soySauce = menuItems.find((item) => item.id === "sauce-5");
+  const drinkItems = menuItems.filter((item) => item.category === "drinks");
+  const upsellItems = [soySauce, ...drinkItems].filter(Boolean) as typeof menuItems;
+
+  const paymentMethods = [
+    { id: "cash", icon: "💵", label: "Наличными курьеру" },
+    { id: "card", icon: "💳", label: "Картой при получении" },
+    { id: "transfer", icon: "📱", label: "Переводом по телефону" },
+  ];
+
+  const now = new Date();
+  const hour = now.getHours();
+  const isOpen = hour >= 10 && hour < 23;
+
+  const isMinOrderMet = totalPrice >= 500;
+  const minOrderRemaining = 500 - totalPrice;
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -74,6 +88,7 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           ...form,
           persons,
+          paymentMethod: selectedPayment,
           items: items.map((i) => ({
             name: i.name,
             price: i.price,
@@ -117,7 +132,7 @@ export default function CheckoutPage() {
     updateField("phone", formatted);
   };
 
-  const canSubmit = !submitting && privacyAccepted && isPhoneComplete(form.phone);
+  const canSubmit = !submitting && privacyAccepted && isPhoneComplete(form.phone) && isMinOrderMet;
 
   if (totalItems === 0) {
     return (
@@ -383,26 +398,46 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment info */}
-              <div className="bg-warm-50 border border-border rounded-2xl p-5">
-                <h4 className="text-sm font-semibold mb-3">
-                  Оплата при получении
-                </h4>
-                <ul className="space-y-2 text-xs text-muted-foreground">
-                  <li className="flex items-center gap-2">
-                    <Banknote className="w-3.5 h-3.5 shrink-0" />
-                    Наличными
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Smartphone className="w-3.5 h-3.5 shrink-0" />
-                    Переводом
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CreditCard className="w-3.5 h-3.5 shrink-0" />
-                    Картой
-                  </li>
-                </ul>
+              {/* Payment method selector */}
+              <div className="bg-card border border-border rounded-2xl p-4">
+                <h4 className="text-sm font-bold mb-3">Способ оплаты</h4>
+                <div className="space-y-2">
+                  {paymentMethods.map((method) => (
+                    <label
+                      key={method.id}
+                      className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors ${
+                        selectedPayment === method.id
+                          ? "border-[#BE1E5A] bg-[#BE1E5A]/5"
+                          : "border-border hover:border-[#BE1E5A]/40"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="payment"
+                        value={method.id}
+                        className="sr-only"
+                        checked={selectedPayment === method.id}
+                        onChange={() => setSelectedPayment(method.id)}
+                      />
+                      <span className="text-lg">{method.icon}</span>
+                      <span className="text-sm font-medium">{method.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
+
+              {/* Working hours */}
+              {isOpen ? (
+                <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-100 rounded-xl p-3">
+                  <Clock className="w-4 h-4 shrink-0" />
+                  <span>Доставляем до 23:00 — принимаем заказы</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-xl p-3">
+                  <Clock className="w-4 h-4 shrink-0" />
+                  <span>Сейчас не работаем. Доставка ежедневно с 10:00 до 23:00</span>
+                </div>
+              )}
 
               {/* Privacy consent */}
               <label className="flex items-start gap-3 cursor-pointer">
@@ -446,6 +481,12 @@ export default function CheckoutPage() {
                   </>
                 )}
               </button>
+
+              {!isMinOrderMet && (
+                <p className="text-sm text-center text-orange-600">
+                  Минимальный заказ — 500 ₽. Добавьте ещё на {minOrderRemaining} ₽
+                </p>
+              )}
 
               <p className="text-[11px] text-muted-foreground text-center leading-relaxed">
                 Нажимая кнопку, вы отправляете заявку на заказ. Оператор свяжется для подтверждения.
