@@ -427,17 +427,16 @@ export default function CheckoutPage() {
               </div>
 
               {/* Working hours */}
-              {isOpen ? (
-                <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-100 rounded-xl p-3">
-                  <Clock className="w-4 h-4 shrink-0" />
-                  <span>Доставляем до 23:00 — принимаем заказы</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-xl p-3">
-                  <Clock className="w-4 h-4 shrink-0" />
-                  <span>Сейчас не работаем. Доставка ежедневно с 10:00 до 23:00</span>
-                </div>
-              )}
+              <div className={`flex items-center gap-2 text-sm rounded-xl px-4 py-3 ${
+                isOpen ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"
+              }`}>
+                <Clock className="w-4 h-4 shrink-0" />
+                <span>
+                  {isOpen
+                    ? "Принимаем заказы — доставляем до 23:00"
+                    : "Сейчас не работаем. Доставка ежедневно 10:00 — 23:00"}
+                </span>
+              </div>
 
               {/* Privacy consent */}
               <label className="flex items-start gap-3 cursor-pointer">
