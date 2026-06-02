@@ -64,10 +64,16 @@ export default function HomePage() {
                   Условия доставки
                 </Link>
               </div>
+
+              {/* Время работы — только на мобильном */}
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-white/60 rounded-xl px-4 py-3 md:hidden mt-4 w-fit">
+                <Clock className="w-4 h-4 text-[#BE1E5A] shrink-0" />
+                <span>Работаем ежедневно <strong>10:00 — 23:00</strong></span>
+              </div>
             </div>
 
-            {/* Right — hero food composition */}
-            <div className="relative md:flex-1 flex items-center justify-center pointer-events-none py-4 md:py-0">
+            {/* Right — hero food composition (hidden on mobile) */}
+            <div className="hidden md:flex relative md:flex-1 items-center justify-center pointer-events-none md:py-0">
               {/* Warm glow behind composition */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[280px] h-[280px] md:w-[340px] md:h-[340px] lg:w-[380px] lg:h-[380px] bg-gradient-to-br from-malina-500/[0.06] via-orange-200/15 to-warm-200/20 rounded-full blur-3xl animate-[glow-pulse_8s_ease-in-out_infinite]" />
 
