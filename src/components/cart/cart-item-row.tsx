@@ -13,11 +13,17 @@ export function CartItemRow({ item }: CartItemRowProps) {
 
   return (
     <div className="flex items-center gap-3 md:gap-4 bg-card border border-border rounded-2xl p-3 md:p-4">
-      {/* Image placeholder */}
-      <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-warm-100 to-warm-200 flex items-center justify-center shrink-0">
-        <span className="text-2xl md:text-3xl opacity-60">
-          {getEmoji(item.name)}
-        </span>
+      {/* Image */}
+      <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-warm-100 to-warm-200 flex items-center justify-center shrink-0">
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full object-cover object-center"
+          />
+        ) : (
+          <span className="text-2xl md:text-3xl opacity-60">{getEmoji(item.name)}</span>
+        )}
       </div>
 
       {/* Info */}
