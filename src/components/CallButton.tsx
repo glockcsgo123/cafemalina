@@ -19,7 +19,7 @@ export function CallButton() {
         +7 (910) 740-31-11
       </span>
       {/* Button */}
-      <span className="w-14 h-14 rounded-full bg-[#BE1E5A] flex items-center justify-center shadow-lg shadow-[#BE1E5A]/40 hover:shadow-xl hover:scale-110 hover:bg-malina-600 transition-all duration-200 shrink-0">
+      <span className="w-14 h-14 rounded-full bg-[#BE1E5A] flex items-center justify-center shadow-[0_4px_20px_rgba(190,30,90,0.4)] hover:shadow-[0_6px_25px_rgba(190,30,90,0.5)] hover:scale-110 hover:bg-malina-600 transition-all duration-200 shrink-0">
         <Phone className="w-6 h-6 text-white" />
       </span>
     </a>

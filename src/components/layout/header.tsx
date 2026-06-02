@@ -43,13 +43,20 @@ export function Header() {
           </Link>
         </nav>
 
-        {/* Phone — desktop shows number, mobile shows icon only */}
+        {/* Phone — desktop: icon + number, mobile: icon only */}
         <a
           href="tel:+79107403111"
-          className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+          className="hidden sm:flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
         >
           <Phone className="w-4 h-4" />
-          <span className="hidden md:inline">+7 (910) 740-31-11</span>
+          +7 (910) 740-31-11
+        </a>
+        <a
+          href="tel:+79107403111"
+          className="sm:hidden flex items-center justify-center w-9 h-9 rounded-full hover:bg-secondary transition-colors"
+          aria-label="Позвонить"
+        >
+          <Phone className="w-5 h-5" />
         </a>
 
         <Link

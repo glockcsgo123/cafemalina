@@ -103,8 +103,8 @@ export function MenuCard({ item, onOpenModal }: MenuCardProps) {
         )}
 
         {/* Price + Action */}
-        <div className="flex items-center justify-between gap-2 mt-auto">
-          <span className="text-lg font-extrabold tracking-tight">
+        <div className="flex items-center justify-between gap-2 mt-auto min-w-0">
+          <span className="text-lg font-extrabold tracking-tight whitespace-nowrap">
             {formatPrice(currentPrice)}
           </span>
 
@@ -112,7 +112,7 @@ export function MenuCard({ item, onOpenModal }: MenuCardProps) {
             <button
               type="button"
               onClick={handleAdd}
-              className="flex items-center gap-1.5 bg-malina-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl hover:bg-malina-600 active:scale-95 transition-all shadow-sm"
+              className="flex items-center gap-1.5 bg-malina-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl hover:bg-malina-600 active:scale-95 transition-all shadow-sm whitespace-nowrap flex-shrink-0"
             >
               <Plus className="w-4 h-4" />
               В корзину
