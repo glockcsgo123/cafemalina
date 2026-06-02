@@ -44,12 +44,9 @@ export const categories: Category[] = [
   { id: "popular", name: "Популярное" },
   { id: "pizza", name: "Пицца" },
   { id: "rolls", name: "Роллы" },
-  { id: "baked-rolls", name: "Запечённые роллы" },
-  { id: "hot-rolls", name: "Горячие роллы" },
-  { id: "premium-rolls", name: "Премиум роллы" },
-  { id: "cream-rolls", name: "Сливочные роллы" },
-  { id: "sets", name: "Наборы" },
-  { id: "fastfood", name: "Фаст-фуд" },
+  { id: "baked-hot-rolls", name: "Запечённые и горячие" },
+  { id: "premium-rolls", name: "Премиум" },
+  { id: "sets", name: "Сеты" },
   { id: "beer-sets", name: "Пивные сеты" },
   { id: "drinks", name: "Напитки" },
   { id: "sauces", name: "Соусы" },
@@ -872,7 +869,7 @@ export const menuItems: MenuItem[] = [
     price: 275,
     weight: "230г",
     image: "/images/amigos.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-2",
@@ -881,7 +878,7 @@ export const menuItems: MenuItem[] = [
     price: 480,
     weight: "260г",
     image: "/images/vatikan.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-3",
@@ -890,7 +887,7 @@ export const menuItems: MenuItem[] = [
     price: 425,
     weight: "260г",
     image: "/images/dinamit.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-4",
@@ -899,7 +896,7 @@ export const menuItems: MenuItem[] = [
     price: 505,
     weight: "230г",
     image: "/images/dubai.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-5",
@@ -908,7 +905,7 @@ export const menuItems: MenuItem[] = [
     price: 435,
     weight: "270г",
     image: "/images/legenda.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-6",
@@ -917,7 +914,7 @@ export const menuItems: MenuItem[] = [
     price: 395,
     weight: "240г",
     image: "/images/master.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-7",
@@ -926,7 +923,7 @@ export const menuItems: MenuItem[] = [
     price: 415,
     weight: "250г",
     image: "/images/mayami.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-8",
@@ -935,7 +932,7 @@ export const menuItems: MenuItem[] = [
     price: 435,
     weight: "250г",
     image: "/images/mikaami.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-9",
@@ -944,7 +941,7 @@ export const menuItems: MenuItem[] = [
     price: 375,
     weight: "230г",
     image: "/images/se-ko.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-10",
@@ -953,7 +950,7 @@ export const menuItems: MenuItem[] = [
     price: 485,
     weight: "250г",
     image: "/images/status.jpg",
-    category: "sets",
+    category: "rolls",
   },
   {
     id: "baked-11",
@@ -962,7 +959,7 @@ export const menuItems: MenuItem[] = [
     price: 405,
     weight: "130г",
     image: "/images/flagman.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-12",
@@ -971,7 +968,7 @@ export const menuItems: MenuItem[] = [
     price: 395,
     weight: "250г",
     image: "/images/tsezar-roll.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-13",
@@ -980,7 +977,7 @@ export const menuItems: MenuItem[] = [
     price: 545,
     weight: "220г",
     image: "/images/zapechennaya-filadelfiya.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-14",
@@ -989,7 +986,7 @@ export const menuItems: MenuItem[] = [
     price: 405,
     weight: "250г",
     image: "/images/zapechennyi-s-krevetkoi.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-15",
@@ -998,7 +995,7 @@ export const menuItems: MenuItem[] = [
     price: 435,
     weight: "250г",
     image: "/images/zapechennyi-s-lososem.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-16",
@@ -1007,7 +1004,7 @@ export const menuItems: MenuItem[] = [
     price: 445,
     weight: "250г",
     image: "/images/zapechennyi-s-unagi.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-17",
@@ -1016,7 +1013,7 @@ export const menuItems: MenuItem[] = [
     price: 435,
     weight: "250г",
     image: "/images/zapechennyi-spai-si-s-krevetkoi.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-18",
@@ -1025,7 +1022,7 @@ export const menuItems: MenuItem[] = [
     price: 405,
     weight: "250г",
     image: "/images/zapechennyi-spai-si-s-lososem.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-19",
@@ -1034,7 +1031,7 @@ export const menuItems: MenuItem[] = [
     price: 405,
     weight: "250г",
     image: "/images/kaliforniya-zapechennaya.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "baked-20",
@@ -1043,7 +1040,7 @@ export const menuItems: MenuItem[] = [
     price: 305,
     weight: "250г",
     image: "/images/grand-chiken-zapechennyi.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-9",
@@ -1052,7 +1049,7 @@ export const menuItems: MenuItem[] = [
     price: 455,
     weight: "250г",
     image: "/images/kaliforniya-s-unagi.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-16",
@@ -1061,7 +1058,7 @@ export const menuItems: MenuItem[] = [
     price: 560,
     weight: "230г",
     image: "/images/dabl-losos-chedder.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-24",
@@ -1070,7 +1067,7 @@ export const menuItems: MenuItem[] = [
     price: 385,
     weight: "230г",
     image: "/images/mikassa.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-38",
@@ -1079,7 +1076,7 @@ export const menuItems: MenuItem[] = [
     price: 245,
     weight: "230г",
     image: "/images/kani-chiz.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-39",
@@ -1088,7 +1085,7 @@ export const menuItems: MenuItem[] = [
     price: 275,
     weight: "130г",
     image: "/images/syake-chiz.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-40",
@@ -1097,7 +1094,7 @@ export const menuItems: MenuItem[] = [
     price: 455,
     weight: "240г",
     image: "/images/syaki-teriyaki.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-41",
@@ -1106,7 +1103,7 @@ export const menuItems: MenuItem[] = [
     price: 285,
     weight: "130г",
     image: "/images/teriyaki-chiz.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-42",
@@ -1115,7 +1112,7 @@ export const menuItems: MenuItem[] = [
     price: 235,
     weight: "130г",
     image: "/images/tomago-chiz.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-43",
@@ -1124,7 +1121,7 @@ export const menuItems: MenuItem[] = [
     price: 275,
     weight: "150г",
     image: "/images/unagi-chiz.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-34",
@@ -1133,7 +1130,7 @@ export const menuItems: MenuItem[] = [
     price: 275,
     weight: "140г",
     image: "/images/chiken-chiz.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "roll-27",
@@ -1142,7 +1139,7 @@ export const menuItems: MenuItem[] = [
     price: 395,
     weight: "180г",
     image: "/images/okinava.jpg",
-    category: "baked-rolls",
+    category: "baked-hot-rolls",
   },
 
   // ========== Горячие роллы ==========
@@ -1153,7 +1150,7 @@ export const menuItems: MenuItem[] = [
     price: 535,
     weight: "220г",
     image: "/images/akari-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-2",
@@ -1162,7 +1159,7 @@ export const menuItems: MenuItem[] = [
     price: 365,
     weight: "220г",
     image: "/images/banzai-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-3",
@@ -1171,7 +1168,7 @@ export const menuItems: MenuItem[] = [
     price: 365,
     weight: "220г",
     image: "/images/kani-krim-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-4",
@@ -1180,7 +1177,7 @@ export const menuItems: MenuItem[] = [
     price: 415,
     weight: "210г",
     image: "/images/kometa-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-5",
@@ -1189,7 +1186,7 @@ export const menuItems: MenuItem[] = [
     price: 415,
     weight: "210г",
     image: "/images/sakura-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-6",
@@ -1198,7 +1195,7 @@ export const menuItems: MenuItem[] = [
     price: 485,
     weight: "245г",
     image: "/images/samurai.jpg",
-    category: "sets",
+    category: "rolls",
   },
   {
     id: "hot-7",
@@ -1207,7 +1204,7 @@ export const menuItems: MenuItem[] = [
     price: 345,
     weight: "260г",
     image: "/images/tempura-chiken.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-8",
@@ -1216,7 +1213,7 @@ export const menuItems: MenuItem[] = [
     price: 385,
     weight: "240г",
     image: "/images/teriyaki-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-9",
@@ -1225,7 +1222,7 @@ export const menuItems: MenuItem[] = [
     price: 385,
     weight: "220г",
     image: "/images/khonako-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-10",
@@ -1234,7 +1231,7 @@ export const menuItems: MenuItem[] = [
     price: 285,
     weight: "220г",
     image: "/images/tsezar-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-11",
@@ -1243,7 +1240,7 @@ export const menuItems: MenuItem[] = [
     price: 385,
     weight: "220г",
     image: "/images/yami-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-12",
@@ -1252,7 +1249,7 @@ export const menuItems: MenuItem[] = [
     price: 415,
     weight: "220г",
     image: "/images/hot-s-lososem.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-13",
@@ -1261,7 +1258,7 @@ export const menuItems: MenuItem[] = [
     price: 425,
     weight: "235г",
     image: "/images/morskoi-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-14",
@@ -1270,7 +1267,7 @@ export const menuItems: MenuItem[] = [
     price: 395,
     weight: "220г",
     image: "/images/firmennyi-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-15",
@@ -1279,7 +1276,7 @@ export const menuItems: MenuItem[] = [
     price: 445,
     weight: "220г",
     image: "/images/frai-ebi-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
   {
     id: "hot-16",
@@ -1288,7 +1285,7 @@ export const menuItems: MenuItem[] = [
     price: 425,
     weight: "220г",
     image: "/images/khokai-hot.jpg",
-    category: "hot-rolls",
+    category: "baked-hot-rolls",
   },
 
   // ========== Премиум роллы ==========
@@ -1409,7 +1406,7 @@ export const menuItems: MenuItem[] = [
     price: 595,
     weight: "220г",
     image: "/images/slivochnyi-s-krevetkoi.jpg",
-    category: "cream-rolls",
+    category: "rolls",
   },
   {
     id: "cream-2",
@@ -1418,7 +1415,7 @@ export const menuItems: MenuItem[] = [
     price: 595,
     weight: "220г",
     image: "/images/slivochnyi-s-lososem.jpg",
-    category: "cream-rolls",
+    category: "rolls",
   },
   {
     id: "cream-3",
@@ -1427,7 +1424,7 @@ export const menuItems: MenuItem[] = [
     price: 595,
     weight: "220г",
     image: "/images/slivochnyi-s-ugrem.jpg",
-    category: "cream-rolls",
+    category: "rolls",
   },
   {
     id: "cream-4",
@@ -1436,7 +1433,7 @@ export const menuItems: MenuItem[] = [
     price: 585,
     weight: "230г",
     image: "/images/fila-slivochnaya.jpg",
-    category: "cream-rolls",
+    category: "rolls",
   },
 
   // ========== Наборы ==========

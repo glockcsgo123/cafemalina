@@ -45,7 +45,7 @@ export default function HomePage() {
                 <span className="text-malina-500">с доставкой</span>
               </h1>
               <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8 max-w-md">
-                Готовим каждый день: пицца, роллы, сеты, фаст-фуд и десерты — быстро и вкусно.
+                Готовим каждый день: пицца, роллы, сеты и десерты — быстро и вкусно.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
@@ -253,7 +253,7 @@ export default function HomePage() {
                   Cafe Malina
                 </h2>
                 <p className="text-muted-foreground leading-relaxed mb-2">
-                  Готовим пиццу, роллы, сеты и фаст-фуд каждый день. Свежие ингредиенты,
+                  Готовим пиццу, роллы и сеты каждый день. Свежие ингредиенты,
                   честные порции и быстрая доставка.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-6">

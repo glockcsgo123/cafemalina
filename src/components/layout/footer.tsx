@@ -37,7 +37,7 @@ export function Footer() {
               {siteConfig.shortName}
             </h3>
             <p className="text-sm text-white/40 leading-relaxed mb-4">
-              Пицца, роллы, сеты и фаст-фуд с доставкой по городу.
+              Пицца, роллы и сеты с доставкой по городу.
             </p>
             {/* Social links */}
             <div className="flex items-center gap-3">

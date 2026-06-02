@@ -40,7 +40,7 @@ export default function MenuPage() {
             Меню
           </h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            Пицца, роллы, сеты, фаст-фуд и многое другое
+            Пицца, роллы, сеты и многое другое
           </p>
         </div>
       </div>
