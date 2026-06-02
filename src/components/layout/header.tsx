@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Phone } from "lucide-react";
 import { useCartStore, selectTotalItems } from "@/lib/store/cart";
 import { useEffect, useState } from "react";
 
@@ -42,6 +42,15 @@ export function Header() {
             О нас
           </Link>
         </nav>
+
+        {/* Phone — desktop shows number, mobile shows icon only */}
+        <a
+          href="tel:+79107403111"
+          className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+        >
+          <Phone className="w-4 h-4" />
+          <span className="hidden md:inline">+7 (910) 740-31-11</span>
+        </a>
 
         <Link
           href="/cart"

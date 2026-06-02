@@ -33,6 +33,7 @@ export interface MenuItem {
   image: string;
   category: string;
   variants?: MenuItemVariant[];
+  recommended?: boolean;
 }
 
 export interface Category {
@@ -113,6 +114,7 @@ export const menuItems: MenuItem[] = [
     price: 680,
     image: "/images/pepperoni.jpg",
     category: "pizza",
+    recommended: true,
     variants: [
       { label: "32 см", price: 680 },
       { label: "40 см", price: 850 },
@@ -488,6 +490,7 @@ export const menuItems: MenuItem[] = [
     weight: "210г",
     image: "/images/filadelfiya.jpg",
     category: "rolls",
+    recommended: true,
   },
   {
     id: "roll-2",
@@ -906,6 +909,7 @@ export const menuItems: MenuItem[] = [
     weight: "270г",
     image: "/images/legenda.jpg",
     category: "baked-hot-rolls",
+    recommended: true,
   },
   {
     id: "baked-6",
@@ -1490,6 +1494,7 @@ export const menuItems: MenuItem[] = [
     weight: "24шт/585г",
     image: "/images/set-fiesta.jpg",
     category: "sets",
+    recommended: true,
   },
   {
     id: "set-7",

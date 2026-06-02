@@ -111,9 +111,15 @@ export function Footer() {
           <span className="text-xs text-white/25">
             &copy; 2026 {siteConfig.name}
           </span>
-          <span className="text-xs text-white/25">
-            Все права защищены
-          </span>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/privacy"
+              className="text-xs text-white/30 hover:text-white/60 transition-colors"
+            >
+              Политика конфиденциальности
+            </Link>
+            <span className="text-xs text-white/25">Все права защищены</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { menuItems, categories } from "@/lib/data/menu";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Search, X } from "lucide-react";
+import { menuItems, categories, MenuItem } from "@/lib/data/menu";
 import { CategoryTabs } from "@/components/menu/category-tabs";
 import { MenuCard } from "@/components/menu/menu-card";
+import { MenuItemModal } from "@/components/menu/MenuItemModal";
 import { ShoppingBag } from "lucide-react";
 import { useCartStore, selectTotalItems, selectTotalPrice } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
@@ -11,25 +13,83 @@ import Link from "next/link";
 
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [modalItem, setModalItem] = useState<MenuItem | null>(null);
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
   const totalItems = useCartStore(selectTotalItems);
   const totalPrice = useCartStore(selectTotalPrice);
+
+  const isSearching = searchQuery.trim().length > 0;
+
+  // Search results
+  const searchResults = isSearching
+    ? menuItems.filter(
+        (item) =>
+          item.category !== "popular" &&
+          (item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : [];
+
+  const groupedByCategory = !isSearching
+    ? categories
+        .filter((c) => c.id !== "popular")
+        .map((cat) => ({
+          ...cat,
+          items: menuItems.filter((item) => item.category === cat.id),
+        }))
+        .filter((group) => group.items.length > 0)
+    : null;
 
   const filteredItems =
     activeCategory === "all"
       ? menuItems.filter((item) => item.category !== "popular")
       : menuItems.filter((item) => item.category === activeCategory);
 
-  // Group items by category for "all" view
-  const groupedByCategory =
-    activeCategory === "all"
-      ? categories
-          .filter((c) => c.id !== "popular")
-          .map((cat) => ({
-            ...cat,
-            items: menuItems.filter((item) => item.category === cat.id),
-          }))
-          .filter((group) => group.items.length > 0)
-      : null;
+  // Intersection Observer — auto-update active tab on scroll
+  const handleCategorySelect = useCallback(
+    (id: string) => {
+      setActiveCategory(id);
+      if (id === "all") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      const el = sectionRefs.current[id];
+      if (el) {
+        const offset = 120;
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (isSearching || activeCategory !== "all") return;
+
+    observerRef.current?.disconnect();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveCategory(entry.target.id || "all");
+            break;
+          }
+        }
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+    );
+
+    observerRef.current = observer;
+    Object.values(sectionRefs.current).forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [isSearching, activeCategory]);
 
   return (
     <>
@@ -42,21 +102,70 @@ export default function MenuPage() {
           <p className="text-muted-foreground mt-1 text-sm">
             Пицца, роллы, сеты и многое другое
           </p>
+
+          {/* Search */}
+          <div className="relative mt-4 mb-2">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Найти блюдо..."
+              className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-malina-500/30 focus:border-malina-500 transition-colors"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Category tabs */}
-      <CategoryTabs
-        activeCategory={activeCategory}
-        onSelect={setActiveCategory}
-      />
+      {/* Category tabs — hidden during search */}
+      {!isSearching && (
+        <CategoryTabs
+          activeCategory={activeCategory}
+          onSelect={handleCategorySelect}
+        />
+      )}
 
       {/* Menu grid */}
       <div className="max-w-6xl mx-auto px-4 py-8 md:py-10">
-        {activeCategory === "all" && groupedByCategory ? (
+        {isSearching ? (
+          <div>
+            {searchResults.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                {searchResults.map((item) => (
+                  <MenuCard
+                    key={item.id}
+                    item={item}
+                    onOpenModal={setModalItem}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 text-muted-foreground">
+                <Search className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                <p className="font-medium">Ничего не найдено</p>
+                <p className="text-sm mt-1">Попробуйте другой запрос</p>
+              </div>
+            )}
+          </div>
+        ) : activeCategory === "all" && groupedByCategory ? (
           <div className="space-y-12">
             {groupedByCategory.map((group) => (
-              <section key={group.id}>
+              <section
+                key={group.id}
+                id={group.id}
+                ref={(el) => {
+                  sectionRefs.current[group.id] = el;
+                }}
+              >
                 <div className="flex items-center gap-3 mb-5">
                   <h2 className="text-xl md:text-2xl font-bold font-[family-name:var(--font-heading)]">
                     {group.name}
@@ -67,7 +176,11 @@ export default function MenuPage() {
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                   {group.items.map((item) => (
-                    <MenuCard key={item.id} item={item} />
+                    <MenuCard
+                      key={item.id}
+                      item={item}
+                      onOpenModal={setModalItem}
+                    />
                   ))}
                 </div>
               </section>
@@ -76,7 +189,11 @@ export default function MenuPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {filteredItems.map((item) => (
-              <MenuCard key={item.id} item={item} />
+              <MenuCard
+                key={item.id}
+                item={item}
+                onOpenModal={setModalItem}
+              />
             ))}
           </div>
         )}
@@ -84,7 +201,7 @@ export default function MenuPage() {
 
       {/* Sticky cart bar (mobile) */}
       {totalItems > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:hidden">
           <Link
             href="/cart"
             className="flex items-center justify-between bg-malina-500 text-white rounded-2xl px-5 py-4 shadow-2xl shadow-malina-500/30"
@@ -92,13 +209,21 @@ export default function MenuPage() {
             <div className="flex items-center gap-3">
               <ShoppingBag className="w-5 h-5" />
               <span className="font-bold text-sm">
-                {totalItems} {totalItems === 1 ? "товар" : totalItems < 5 ? "товара" : "товаров"}
+                {totalItems}{" "}
+                {totalItems === 1
+                  ? "товар"
+                  : totalItems < 5
+                  ? "товара"
+                  : "товаров"}
               </span>
             </div>
             <span className="font-bold">{formatPrice(totalPrice)}</span>
           </Link>
         </div>
       )}
+
+      {/* Item modal */}
+      <MenuItemModal item={modalItem} onClose={() => setModalItem(null)} />
     </>
   );
 }

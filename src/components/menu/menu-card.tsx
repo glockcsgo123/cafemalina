@@ -8,9 +8,10 @@ import { formatPrice } from "@/lib/utils";
 
 interface MenuCardProps {
   item: MenuItem;
+  onOpenModal?: (item: MenuItem) => void;
 }
 
-export function MenuCard({ item }: MenuCardProps) {
+export function MenuCard({ item, onOpenModal }: MenuCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
 
@@ -44,8 +45,12 @@ export function MenuCard({ item }: MenuCardProps) {
 
   return (
     <div className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-malina-500/20 transition-all duration-200">
-      {/* Image */}
-      <div className="relative aspect-[5/3] overflow-hidden bg-warm-200">
+      {/* Image — click opens modal */}
+      <button
+        type="button"
+        onClick={() => onOpenModal?.(item)}
+        className="relative aspect-[5/3] overflow-hidden bg-warm-200 w-full text-left focus:outline-none"
+      >
         <img
           src={item.image}
           alt={item.name}
@@ -58,13 +63,19 @@ export function MenuCard({ item }: MenuCardProps) {
             {item.weight}
           </div>
         )}
-      </div>
+      </button>
 
       {/* Content */}
       <div className="p-4 flex flex-col">
-        <h3 className="font-bold text-[15px] leading-tight mb-1.5">
-          {item.name}
-        </h3>
+        <button
+          type="button"
+          onClick={() => onOpenModal?.(item)}
+          className="text-left focus:outline-none"
+        >
+          <h3 className="font-bold text-[15px] leading-tight mb-1.5 hover:text-malina-500 transition-colors">
+            {item.name}
+          </h3>
+        </button>
         {item.description && (
           <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-3 flex-1">
             {item.description}

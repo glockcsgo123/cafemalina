@@ -14,6 +14,7 @@ import {
 import { menuItems } from "@/lib/data/menu";
 import { siteConfig } from "@/lib/data/site";
 import { PopularCard } from "@/components/menu/popular-card";
+import { RecommendedSection } from "@/components/menu/RecommendedSection";
 import { Reveal } from "@/components/ui/reveal";
 import { formatPrice } from "@/lib/utils";
 
@@ -93,7 +94,7 @@ export default function HomePage() {
             {[
               { icon: ChefHat, text: "Готовим при заказе" },
               { icon: Clock, text: `Доставка ${siteConfig.delivery.deliveryTime}` },
-              { icon: Zap, text: "Пицца, роллы, сеты, бургеры" },
+              { icon: Zap, text: "Пицца, роллы, сеты и напитки" },
             ].map((item) => (
               <div
                 key={item.text}
@@ -160,6 +161,9 @@ export default function HomePage() {
           </Reveal>
         </div>
       </section>
+
+      {/* Рекомендуем */}
+      <RecommendedSection />
 
       {/* Доставка и оплата */}
       <section id="delivery" className="bg-gradient-to-b from-warm-100 to-warm-50 border-y border-border py-16 md:py-20">

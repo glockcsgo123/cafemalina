@@ -9,9 +9,10 @@ import { formatPrice } from "@/lib/utils";
 interface PopularCardProps {
   item: MenuItem;
   featured?: boolean;
+  onOpenModal?: () => void;
 }
 
-export function PopularCard({ item, featured = false }: PopularCardProps) {
+export function PopularCard({ item, featured = false, onOpenModal }: PopularCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [added, setAdded] = useState(false);
 
@@ -48,8 +49,10 @@ export function PopularCard({ item, featured = false }: PopularCardProps) {
       }`}
     >
       {/* Image area */}
-      <div
-        className={`relative overflow-hidden bg-warm-200 ${
+      <button
+        type="button"
+        onClick={onOpenModal}
+        className={`relative overflow-hidden bg-warm-200 w-full focus:outline-none ${
           featured ? "aspect-[4/3] sm:aspect-square" : "aspect-[4/3]"
         }`}
       >
@@ -66,7 +69,7 @@ export function PopularCard({ item, featured = false }: PopularCardProps) {
             {hasVariants ? `от ${formatPrice(item.price)}` : formatPrice(item.price)}
           </span>
         </div>
-      </div>
+      </button>
 
       {/* Content */}
       <div className={`p-4 ${featured ? "md:p-5" : ""}`}>

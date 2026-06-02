@@ -3,6 +3,8 @@ import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { CallButton } from "@/components/CallButton";
+import { CookieBanner } from "@/components/CookieBanner";
 import { siteConfig } from "@/lib/data/site";
 
 const inter = Inter({
@@ -31,6 +33,8 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CallButton />
+        <CookieBanner />
       </body>
     </html>
   );
