@@ -65,11 +65,6 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              {/* Время работы — только на мобильном */}
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-white/60 rounded-xl px-4 py-3 md:hidden mt-4 w-fit">
-                <Clock className="w-4 h-4 text-[#BE1E5A] shrink-0" />
-                <span>Работаем ежедневно <strong>10:00 — 23:00</strong></span>
-              </div>
             </div>
 
             {/* Right — hero food composition (hidden on mobile) */}
