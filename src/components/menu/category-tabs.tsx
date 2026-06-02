@@ -21,8 +21,8 @@ export function CategoryTabs({ activeCategory, onSelect }: CategoryTabsProps) {
             className={cn(
               "shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap",
               activeCategory === "all"
-                ? "bg-malina-500 text-white shadow-sm"
-                : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-warm-200"
+                ? "bg-malina-500 text-white shadow-md"
+                : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-gray-100"
             )}
           >
             Все
@@ -36,8 +36,8 @@ export function CategoryTabs({ activeCategory, onSelect }: CategoryTabsProps) {
                 className={cn(
                   "shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap",
                   activeCategory === category.id
-                    ? "bg-malina-500 text-white shadow-sm"
-                    : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-warm-200"
+                    ? "bg-malina-500 text-white shadow-md"
+                    : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-gray-100"
                 )}
               >
                 {category.name}

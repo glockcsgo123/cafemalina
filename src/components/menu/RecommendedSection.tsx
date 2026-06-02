@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star } from "lucide-react";
+import { Star } from "lucide-react"; // used in section header
 import { menuItems, MenuItem } from "@/lib/data/menu";
 import { PopularCard } from "@/components/menu/popular-card";
 import { MenuItemModal } from "@/components/menu/MenuItemModal";
@@ -15,7 +15,7 @@ export function RecommendedSection() {
 
   return (
     <>
-      <section className="py-16 md:py-20 bg-gradient-to-b from-background to-warm-50">
+      <section className="py-12 md:py-14 bg-gradient-to-b from-background to-warm-50">
         <div className="max-w-6xl mx-auto px-4">
           <Reveal>
             <div className="flex items-end justify-between mb-10">
@@ -38,8 +38,7 @@ export function RecommendedSection() {
             {recommendedItems.map((item, i) => (
               <Reveal key={item.id} delay={i * 100}>
                 <div className="relative">
-                  <div className="absolute top-3 left-3 z-10 flex items-center gap-1 bg-malina-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
-                    <Star className="w-3 h-3 fill-white" />
+                  <div className="absolute top-3 left-3 z-10 bg-[#BE1E5A]/90 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
                     Рекомендуем
                   </div>
                   <PopularCard

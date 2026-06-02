@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, ShoppingBag } from "lucide-react";
 import { menuItems, categories, MenuItem } from "@/lib/data/menu";
 import { CategoryTabs } from "@/components/menu/category-tabs";
 import { MenuCard } from "@/components/menu/menu-card";
 import { MenuItemModal } from "@/components/menu/MenuItemModal";
-import { ShoppingBag } from "lucide-react";
+import { Reveal } from "@/components/ui/reveal";
 import { useCartStore, selectTotalItems, selectTotalPrice } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
@@ -111,7 +111,7 @@ export default function MenuPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Найти блюдо..."
-              className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-malina-500/30 focus:border-malina-500 transition-colors"
+              className="w-full h-12 pl-10 pr-10 rounded-xl border border-border bg-card text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-[#BE1E5A]/20 focus:border-[#BE1E5A] transition-colors"
             />
             {searchQuery && (
               <button
@@ -174,15 +174,17 @@ export default function MenuPage() {
                     {group.items.length}
                   </span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                  {group.items.map((item) => (
-                    <MenuCard
-                      key={item.id}
-                      item={item}
-                      onOpenModal={setModalItem}
-                    />
-                  ))}
-                </div>
+                <Reveal>
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                    {group.items.map((item) => (
+                      <MenuCard
+                        key={item.id}
+                        item={item}
+                        onOpenModal={setModalItem}
+                      />
+                    ))}
+                  </div>
+                </Reveal>
               </section>
             ))}
           </div>

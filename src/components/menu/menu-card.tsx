@@ -49,13 +49,13 @@ export function MenuCard({ item, onOpenModal }: MenuCardProps) {
       <button
         type="button"
         onClick={() => onOpenModal?.(item)}
-        className="relative aspect-[5/3] overflow-hidden bg-warm-200 w-full text-left focus:outline-none"
+        className="relative aspect-[4/3] overflow-hidden bg-warm-200 w-full text-left focus:outline-none"
       >
         <img
           src={item.image}
           alt={item.name}
           loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
         />
         {/* Weight badge */}
         {item.weight && (
@@ -93,7 +93,7 @@ export function MenuCard({ item, onOpenModal }: MenuCardProps) {
                 className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
                   selectedVariant === i
                     ? "bg-malina-500 text-white"
-                    : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+                    : "bg-secondary text-muted-foreground hover:bg-warm-200 cursor-pointer"
                 }`}
               >
                 {v.label}

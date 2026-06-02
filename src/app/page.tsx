@@ -109,11 +109,11 @@ export default function HomePage() {
       </section>
 
       {/* Популярные блюда */}
-      <section className="py-16 md:py-20">
+      <section className="py-12 md:py-14">
         <div className="max-w-6xl mx-auto px-4">
           {/* Section header */}
           <Reveal>
-            <div className="flex items-end justify-between mb-10">
+            <div className="flex items-end justify-between mb-8">
               <div>
                 <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
                   <Flame className="w-3.5 h-3.5" />
@@ -166,7 +166,7 @@ export default function HomePage() {
       <RecommendedSection />
 
       {/* Доставка и оплата */}
-      <section id="delivery" className="bg-gradient-to-b from-warm-100 to-warm-50 border-y border-border py-16 md:py-20">
+      <section id="delivery" className="bg-gradient-to-b from-warm-100 to-warm-50 border-y border-border py-12 md:py-14">
         <div className="max-w-6xl mx-auto px-4">
           <Reveal>
             <div className="text-center mb-10">
@@ -243,7 +243,7 @@ export default function HomePage() {
       </section>
 
       {/* О Cafe Malina — брендовый блок */}
-      <section id="about" className="py-20 md:py-24">
+      <section id="about" className="py-12 md:py-14">
         <div className="max-w-6xl mx-auto px-4">
           <Reveal>
             <div className="relative bg-gradient-to-br from-malina-500/[0.04] via-warm-100 to-orange-50/50 border border-border rounded-3xl p-8 md:p-14 overflow-hidden hover:shadow-xl hover:border-malina-500/10 transition-all duration-500">
