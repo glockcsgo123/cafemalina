@@ -2,7 +2,11 @@ import fs from "fs";
 import path from "path";
 import { menuItems as staticMenuItems } from "./menu";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+// На Vercel data/ read-only — используем /tmp для записи
+const DATA_DIR = process.env.VERCEL
+  ? "/tmp/cafemalina"
+  : path.join(process.cwd(), "data");
+
 const MENU_FILE = path.join(DATA_DIR, "menu.json");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
@@ -19,12 +23,20 @@ export const DEFAULT_SETTINGS = {
   heroSubtitle: "Готовим каждый день: пицца, роллы, сеты — быстро и вкусно.",
 };
 
+function ensureDir() {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  } catch {
+    // ignore
+  }
+}
+
 function tryWrite(filePath: string, data: unknown) {
   try {
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    ensureDir();
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
   } catch {
-    // read-only filesystem (e.g. Vercel) — ignore
+    // read-only или нет доступа — молча игнорируем
   }
 }
 
@@ -34,14 +46,13 @@ function tryRead<T>(filePath: string, fallback: T): T {
       return JSON.parse(fs.readFileSync(filePath, "utf-8")) as T;
     }
   } catch {
-    // corrupted file — ignore
+    // повреждённый файл — игнорируем
   }
   return fallback;
 }
 
 export function readMenu() {
   const data = tryRead<typeof staticMenuItems>(MENU_FILE, staticMenuItems);
-  // bootstrap file if missing (no-op on read-only fs)
   if (!fs.existsSync(MENU_FILE)) tryWrite(MENU_FILE, staticMenuItems);
   return data;
 }
@@ -51,9 +62,7 @@ export function writeMenu(data: unknown) {
 }
 
 export function readOrders(): Record<string, unknown>[] {
-  const data = tryRead<Record<string, unknown>[]>(ORDERS_FILE, []);
-  if (!fs.existsSync(ORDERS_FILE)) tryWrite(ORDERS_FILE, []);
-  return data;
+  return tryRead<Record<string, unknown>[]>(ORDERS_FILE, []);
 }
 
 export function writeOrders(data: unknown) {
