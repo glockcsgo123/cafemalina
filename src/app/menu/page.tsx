@@ -145,7 +145,7 @@ export default function MenuPage() {
         {isSearching ? (
           <div>
             {searchResults.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {searchResults.map((item) => (
                   <MenuCard
                     key={item.id}
@@ -182,7 +182,7 @@ export default function MenuPage() {
                   </span>
                 </div>
                 <Reveal>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                     {group.items.map((item) => (
                       <MenuCard
                         key={item.id}
@@ -197,7 +197,7 @@ export default function MenuPage() {
           </div>
         ) : (
           /* Single category filtered view */
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {filteredItems.map((item) => (
               <MenuCard
                 key={item.id}
