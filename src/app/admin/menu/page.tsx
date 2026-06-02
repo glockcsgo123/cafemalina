@@ -42,8 +42,12 @@ export default function AdminMenuPage() {
 
   useEffect(() => {
     fetch("/api/menu")
-      .then((r) => r.json())
-      .then(setItems);
+      .then((r) => {
+        if (!r.ok) throw new Error(`${r.status}`);
+        return r.json();
+      })
+      .then((data) => setItems(Array.isArray(data) ? data : []))
+      .catch(() => setItems([]));
   }, []);
 
   const filtered = items.filter((item) => {

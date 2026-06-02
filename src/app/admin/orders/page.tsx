@@ -61,11 +61,15 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     fetch("/api/orders")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`${r.status}`);
+        return r.json();
+      })
       .then((data) => {
         setOrders(Array.isArray(data) ? data : []);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   const advance = async (order: Order) => {

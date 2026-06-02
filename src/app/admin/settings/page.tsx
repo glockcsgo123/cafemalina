@@ -16,14 +16,18 @@ interface Settings {
 }
 
 export default function AdminSettingsPage() {
-  const [settings, setSettings] = useState<Settings | null>(null);
+  const [settings, setSettings] = useState<Settings | null | undefined>(undefined);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings")
-      .then((r) => r.json())
-      .then(setSettings);
+      .then((r) => {
+        if (!r.ok) throw new Error(`${r.status}`);
+        return r.json();
+      })
+      .then(setSettings)
+      .catch(() => setSettings(null));
   }, []);
 
   const handleSave = async () => {
@@ -39,10 +43,12 @@ export default function AdminSettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  if (!settings) {
-    return (
-      <div className="p-8 text-muted-foreground text-sm">Загрузка...</div>
-    );
+  if (settings === undefined) {
+    return <div className="p-8 text-muted-foreground text-sm">Загрузка...</div>;
+  }
+
+  if (settings === null) {
+    return <div className="p-8 text-red-500 text-sm">Ошибка загрузки настроек. Обновите страницу.</div>;
   }
 
   const field = (

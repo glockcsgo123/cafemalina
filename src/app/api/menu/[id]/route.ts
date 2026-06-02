@@ -1,35 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readMenu, writeMenu } from "@/lib/data/db";
-import { cookies } from "next/headers";
 
-function isAdmin() {
-  const jar = cookies();
-  return (jar as unknown as { get: (k: string) => { value: string } | undefined }).get("admin_token")?.value === process.env.ADMIN_PASSWORD;
+function isAdmin(req: NextRequest): boolean {
+  return !!req.cookies.get("admin_token")?.value;
 }
 
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!isAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { id } = await params;
-  const body = await req.json();
-  const menu = readMenu();
-  const idx = menu.findIndex((item: { id: string }) => item.id === id);
-  if (idx === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  menu[idx] = { ...menu[idx], ...body };
-  writeMenu(menu);
-  return NextResponse.json(menu[idx]);
+  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { id } = await params;
+    const body = await req.json();
+    const menu = readMenu();
+    const idx = menu.findIndex((item: { id: string }) => item.id === id);
+    if (idx === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    menu[idx] = { ...menu[idx], ...body };
+    writeMenu(menu);
+    return NextResponse.json(menu[idx]);
+  } catch (e) {
+    console.error("PUT /api/menu/[id] error:", e);
+    return NextResponse.json({ error: "Failed to save" }, { status: 500 });
+  }
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!isAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { id } = await params;
-  const menu = readMenu();
-  const filtered = menu.filter((item: { id: string }) => item.id !== id);
-  writeMenu(filtered);
-  return NextResponse.json({ ok: true });
+  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const { id } = await params;
+    const menu = readMenu();
+    const filtered = menu.filter((item: { id: string }) => item.id !== id);
+    writeMenu(filtered);
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    console.error("DELETE /api/menu/[id] error:", e);
+    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+  }
 }

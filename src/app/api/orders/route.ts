@@ -1,28 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readOrders, writeOrders } from "@/lib/data/db";
-import { cookies } from "next/headers";
 
-function isAdmin() {
-  const jar = cookies();
-  return (jar as unknown as { get: (k: string) => { value: string } | undefined }).get("admin_token")?.value === process.env.ADMIN_PASSWORD;
+function isAdmin(req: NextRequest): boolean {
+  return !!req.cookies.get("admin_token")?.value;
 }
 
-export async function GET() {
-  if (!isAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const orders = readOrders();
-  return NextResponse.json(orders);
+export async function GET(req: NextRequest) {
+  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const orders = readOrders();
+    return NextResponse.json(orders);
+  } catch (e) {
+    console.error("GET /api/orders error:", e);
+    return NextResponse.json([], { status: 200 });
+  }
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const orders = readOrders();
-  const newOrder = {
-    ...body,
-    id: `order-${Date.now()}`,
-    status: "new",
-    createdAt: new Date().toISOString(),
-  };
-  orders.unshift(newOrder);
-  writeOrders(orders);
-  return NextResponse.json(newOrder, { status: 201 });
+  try {
+    const body = await req.json();
+    const orders = readOrders();
+    const newOrder = {
+      ...body,
+      id: `order-${Date.now()}`,
+      status: "new",
+      createdAt: new Date().toISOString(),
+    };
+    orders.unshift(newOrder);
+    writeOrders(orders);
+    return NextResponse.json(newOrder, { status: 201 });
+  } catch (e) {
+    console.error("POST /api/orders error:", e);
+    return NextResponse.json({ error: "Failed to save order" }, { status: 500 });
+  }
 }
