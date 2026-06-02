@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { UtensilsCrossed, ClipboardList, LogOut } from "lucide-react";
+import { UtensilsCrossed, ClipboardList, LogOut, Settings } from "lucide-react";
 
 export default function AdminLayout({
   children,
@@ -50,6 +50,18 @@ export default function AdminLayout({
           >
             <ClipboardList className="w-4 h-4" />
             Заказы
+          </Link>
+
+          <Link
+            href="/admin/settings"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+              pathname.startsWith("/admin/settings")
+                ? "bg-malina-500 text-white"
+                : "text-white/60 hover:text-white hover:bg-white/10"
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+            Настройки
           </Link>
         </nav>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, Search, X, Upload } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, X, Upload, Star, Flame } from "lucide-react";
 import { categories } from "@/lib/data/menu";
 import { formatPrice } from "@/lib/utils";
 
@@ -15,6 +15,7 @@ interface MenuItem {
   category: string;
   variants?: { label: string; price: number }[];
   recommended?: boolean;
+  isHit?: boolean;
 }
 
 const EMPTY: Omit<MenuItem, "id"> = {
@@ -25,6 +26,7 @@ const EMPTY: Omit<MenuItem, "id"> = {
   image: "",
   category: "pizza",
   recommended: false,
+  isHit: false,
 };
 
 export default function AdminMenuPage() {
@@ -65,9 +67,7 @@ export default function AdminMenuPage() {
     setModalItem(item);
   };
 
-  const closeModal = () => {
-    setModalItem(null);
-  };
+  const closeModal = () => setModalItem(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -110,13 +110,24 @@ export default function AdminMenuPage() {
     setDeleteId(null);
   };
 
+  const toggleFlag = async (item: MenuItem, flag: "recommended" | "isHit") => {
+    const updated = { ...item, [flag]: !item[flag] };
+    const res = await fetch(`/api/menu/${item.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated),
+    });
+    const saved = await res.json();
+    setItems((prev) => prev.map((i) => (i.id === saved.id ? saved : i)));
+  };
+
   return (
     <div className="p-6 md:p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold">Меню</h1>
-          <p className="text-sm text-muted-foreground">{items.length} позиций</p>
+          <p className="text-sm text-muted-foreground">Всего блюд: {items.length}</p>
         </div>
         <button
           onClick={openNew}
@@ -163,6 +174,7 @@ export default function AdminMenuPage() {
                 <th className="text-left px-4 py-3 font-semibold">Блюдо</th>
                 <th className="text-left px-4 py-3 font-semibold hidden sm:table-cell">Категория</th>
                 <th className="text-left px-4 py-3 font-semibold">Цена</th>
+                <th className="text-center px-4 py-3 font-semibold whitespace-nowrap">⭐ / 🔥</th>
                 <th className="px-4 py-3 w-20"></th>
               </tr>
             </thead>
@@ -178,9 +190,14 @@ export default function AdminMenuPage() {
                       />
                       <div>
                         <p className="font-medium leading-tight">{item.name}</p>
-                        {item.recommended && (
-                          <span className="text-[10px] text-malina-500 font-semibold">★ Рекомендуем</span>
-                        )}
+                        <div className="flex gap-2 mt-0.5">
+                          {item.recommended && (
+                            <span className="text-[10px] text-malina-500 font-semibold">★ Рек.</span>
+                          )}
+                          {item.isHit && (
+                            <span className="text-[10px] text-orange-500 font-semibold">🔥 Хит</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -188,6 +205,32 @@ export default function AdminMenuPage() {
                     {categories.find((c) => c.id === item.category)?.name || item.category}
                   </td>
                   <td className="px-4 py-3 font-semibold">{formatPrice(item.price)}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-center gap-1">
+                      <button
+                        onClick={() => toggleFlag(item, "recommended")}
+                        title="Рекомендуем"
+                        className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${
+                          item.recommended
+                            ? "bg-malina-500/10 text-malina-500"
+                            : "text-muted-foreground hover:bg-secondary"
+                        }`}
+                      >
+                        <Star className="w-3.5 h-3.5" fill={item.recommended ? "currentColor" : "none"} />
+                      </button>
+                      <button
+                        onClick={() => toggleFlag(item, "isHit")}
+                        title="Хит заказов"
+                        className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${
+                          item.isHit
+                            ? "bg-orange-100 text-orange-500"
+                            : "text-muted-foreground hover:bg-secondary"
+                        }`}
+                      >
+                        <Flame className="w-3.5 h-3.5" fill={item.isHit ? "currentColor" : "none"} />
+                      </button>
+                    </div>
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1 justify-end">
                       <button
@@ -324,16 +367,27 @@ export default function AdminMenuPage() {
                   </select>
                 </div>
 
-                {/* Recommended */}
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={!!form.recommended}
-                    onChange={(e) => setForm({ ...form, recommended: e.target.checked })}
-                    className="w-4 h-4 accent-malina-500"
-                  />
-                  <span className="text-sm font-medium">★ Рекомендуем</span>
-                </label>
+                {/* Flags */}
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!form.recommended}
+                      onChange={(e) => setForm({ ...form, recommended: e.target.checked })}
+                      className="w-4 h-4 accent-malina-500"
+                    />
+                    <span className="text-sm font-medium">★ Рекомендуем</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!form.isHit}
+                      onChange={(e) => setForm({ ...form, isHit: e.target.checked })}
+                      className="w-4 h-4 accent-orange-500"
+                    />
+                    <span className="text-sm font-medium">🔥 Хит заказов</span>
+                  </label>
+                </div>
               </div>
 
               <div className="flex gap-3 p-5 border-t border-border">

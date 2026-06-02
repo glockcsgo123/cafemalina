@@ -34,6 +34,7 @@ export interface MenuItem {
   category: string;
   variants?: MenuItemVariant[];
   recommended?: boolean;
+  isHit?: boolean;
 }
 
 export interface Category {
