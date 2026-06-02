@@ -15,13 +15,17 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl font-bold font-[family-name:var(--font-heading)] text-malina-500 tracking-tight">
-            Malina
-          </span>
-        </Link>
+      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center">
+        {/* Логотип — левая сторона */}
+        <div className="flex-1">
+          <Link href="/">
+            <span className="text-2xl font-bold font-[family-name:var(--font-heading)] text-malina-500 tracking-tight">
+              Malina
+            </span>
+          </Link>
+        </div>
 
+        {/* Навигация — строго по центру (только desktop) */}
         <nav className="hidden md:flex items-center gap-8">
           <Link
             href="/menu"
@@ -43,17 +47,20 @@ export function Header() {
           </Link>
         </nav>
 
-        <Link
-          href="/cart"
-          className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-secondary transition-colors"
-        >
-          <ShoppingBag className="w-5 h-5" />
-          {mounted && itemCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-malina-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-              {itemCount}
-            </span>
-          )}
-        </Link>
+        {/* Корзина — правая сторона */}
+        <div className="flex-1 flex justify-end">
+          <Link
+            href="/cart"
+            className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-secondary transition-colors"
+          >
+            <ShoppingBag className="w-5 h-5" />
+            {mounted && itemCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-malina-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+        </div>
       </div>
     </header>
   );
