@@ -8,16 +8,25 @@ function isAdmin(req: NextRequest): boolean {
 
 // ---------- VK уведомление ----------
 
-async function sendVkNotification(order: Record<string, unknown>) {
+async function sendVkNotification(order: Record<string, unknown>): Promise<string> {
   const token = process.env.VK_BOT_TOKEN;
   const peerId = process.env.VK_CHAT_PEER_ID;
 
-  if (!token || !peerId) return; // не настроено — молча пропускаем
+  if (!token || !peerId) {
+    return "VK_NOT_CONFIGURED";
+  }
 
   const items = (order.items as { name: string; price: number; quantity: number }[]) ?? [];
   const itemLines = items
     .map((i) => `  ${i.name} ×${i.quantity} — ${formatPrice(i.price * i.quantity)}`)
     .join("\n");
+
+  const paymentLabels: Record<string, string> = {
+    cash: "Наличными",
+    card: "Картой",
+    transfer: "Переводом",
+  };
+  const payment = paymentLabels[order.paymentMethod as string] ?? String(order.paymentMethod ?? "");
 
   const lines = [
     `🔔 НОВЫЙ ЗАКАЗ`,
@@ -30,15 +39,11 @@ async function sendVkNotification(order: Record<string, unknown>) {
     itemLines,
     ``,
     `💰 Итого: ${formatPrice(order.total as number)}`,
-    `💳 Оплата: ${order.paymentMethod ?? "не указано"}`,
+    `💳 Оплата: ${payment}`,
   ];
 
-  if (order.persons && Number(order.persons) > 1) {
-    lines.push(`👥 Персон: ${order.persons}`);
-  }
-  if (order.comment) {
-    lines.push(`💬 ${order.comment}`);
-  }
+  if (order.persons && Number(order.persons) > 1) lines.push(`👥 Персон: ${order.persons}`);
+  if (order.comment) lines.push(`💬 ${order.comment}`);
 
   const params = new URLSearchParams({
     peer_id: peerId,
@@ -48,18 +53,18 @@ async function sendVkNotification(order: Record<string, unknown>) {
     v: "5.199",
   });
 
-  try {
-    const res = await fetch("https://api.vk.com/method/messages.send", {
-      method: "POST",
-      body: params,
-    });
-    const data = await res.json();
-    if (data.error) {
-      console.error("VK API error:", data.error.error_msg);
-    }
-  } catch (e) {
-    console.error("VK send failed:", e);
+  const res = await fetch("https://api.vk.com/method/messages.send", {
+    method: "POST",
+    body: params,
+  });
+  const data = await res.json();
+
+  if (data.error) {
+    console.error("VK error:", data.error);
+    return `VK_ERROR: ${data.error.error_msg}`;
   }
+
+  return "OK";
 }
 
 // ---------- Роуты ----------
@@ -68,13 +73,8 @@ export async function GET(req: NextRequest) {
   if (!isAdmin(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  try {
-    const orders = readOrders();
-    return NextResponse.json(orders);
-  } catch (e) {
-    console.error("GET /api/orders error:", e);
-    return NextResponse.json([]);
-  }
+  const orders = readOrders();
+  return NextResponse.json(orders);
 }
 
 export async function POST(req: NextRequest) {
@@ -82,10 +82,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     if (!body.name || !body.phone || !body.address) {
-      return NextResponse.json(
-        { error: "Заполните обязательные поля" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Заполните обязательные поля" }, { status: 400 });
     }
 
     const newOrder = {
@@ -95,15 +92,16 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    // Сохраняем в файл (работает локально; на Vercel — silent fail)
+    // Сохраняем заказ
     const orders = readOrders();
     orders.unshift(newOrder);
     writeOrders(orders);
 
-    // Отправляем уведомление в ВК (не ждём — не блокируем ответ)
-    sendVkNotification(newOrder).catch(() => {});
+    // Ждём VK (await — не fire-and-forget, Vercel не закроет функцию раньше времени)
+    const vkStatus = await sendVkNotification(newOrder);
+    console.log(`Order ${newOrder.id} | VK: ${vkStatus}`);
 
-    return NextResponse.json(newOrder, { status: 201 });
+    return NextResponse.json({ ...newOrder, vkStatus }, { status: 201 });
   } catch (e) {
     console.error("POST /api/orders error:", e);
     return NextResponse.json({ error: "Не удалось сохранить заказ" }, { status: 500 });

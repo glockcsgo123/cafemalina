@@ -55,9 +55,16 @@ function formatDate(iso: string) {
   });
 }
 
+interface StatusData {
+  env: Record<string, string>;
+  vk: { configured: boolean; apiCheck: string };
+  orders: { count: number };
+}
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState<StatusData | null>(null);
 
   useEffect(() => {
     fetch("/api/orders")
@@ -70,6 +77,11 @@ export default function AdminOrdersPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    fetch("/api/admin/status")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => setStatus(data))
+      .catch(() => {});
   }, []);
 
   const advance = async (order: Order) => {
@@ -90,7 +102,7 @@ export default function AdminOrdersPage() {
   return (
     <div className="p-6 md:p-8">
       <div className="mb-6">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-1">
           <h1 className="text-xl font-bold">Заказы</h1>
           {newCount > 0 && (
             <span className="bg-malina-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
@@ -100,6 +112,28 @@ export default function AdminOrdersPage() {
         </div>
         <p className="text-sm text-muted-foreground">{orders.length} всего</p>
       </div>
+
+      {/* Диагностика конфигурации */}
+      {status && (
+        <div className={`rounded-2xl border p-4 mb-6 text-sm space-y-1 ${
+          status.vk.configured ? "bg-green-50 border-green-200" : "bg-amber-50 border-amber-200"
+        }`}>
+          <p className="font-semibold mb-2">
+            {status.vk.configured ? "✅ VK уведомления настроены" : "⚠️ VK уведомления не настроены"}
+          </p>
+          {Object.entries(status.env).map(([k, v]) => (
+            <p key={k} className="text-xs font-mono">{k}: {v}</p>
+          ))}
+          {status.vk.configured && (
+            <p className="text-xs mt-1">Проверка токена: {status.vk.apiCheck}</p>
+          )}
+          {!status.vk.configured && (
+            <p className="text-xs text-amber-700 mt-2">
+              Добавьте VK_BOT_TOKEN и VK_CHAT_PEER_ID в Vercel → Settings → Environment Variables
+            </p>
+          )}
+        </div>
+      )}
 
       {loading && (
         <div className="text-center py-12 text-muted-foreground text-sm">
