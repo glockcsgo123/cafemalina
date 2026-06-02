@@ -9,7 +9,7 @@ import {
   CreditCard,
   Smartphone,
   Zap,
-  ChefHat,
+  CalendarDays,
 } from "lucide-react";
 import { menuItems } from "@/lib/data/menu";
 import { siteConfig } from "@/lib/data/site";
@@ -92,9 +92,9 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 py-5">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 sm:divide-x divide-border">
             {[
-              { icon: ChefHat, text: "Готовим при заказе" },
               { icon: Clock, text: `Доставка ${siteConfig.delivery.deliveryTime}` },
               { icon: Zap, text: "Пицца, роллы, сеты и напитки" },
+              { icon: CalendarDays, text: siteConfig.workingHours.text },
             ].map((item) => (
               <div
                 key={item.text}
