@@ -6,17 +6,13 @@ import { menuItems, categories, MenuItem } from "@/lib/data/menu";
 import { CategoryTabs } from "@/components/menu/category-tabs";
 import { MenuCard } from "@/components/menu/menu-card";
 import { MenuItemModal } from "@/components/menu/MenuItemModal";
-import { Reveal } from "@/components/ui/reveal";
 import { useCartStore, selectTotalItems, selectTotalPrice } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 
 export default function MenuPage() {
-  // activeFilter — what the user clicked (controls content: grouped-all vs single category)
   const [activeFilter, setActiveFilter] = useState("all");
-  // scrollHighlight — which tab is highlighted while scrolling in "all" mode (never changes content)
   const [scrollHighlight, setScrollHighlight] = useState("all");
-
   const [searchQuery, setSearchQuery] = useState("");
   const [modalItem, setModalItem] = useState<MenuItem | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
@@ -48,7 +44,6 @@ export default function MenuPage() {
     (item) => item.category === activeFilter
   );
 
-  // The tab bar shows scrollHighlight when in all-mode, otherwise activeFilter
   const activeTabId = isAllMode ? scrollHighlight : activeFilter;
 
   const handleCategorySelect = useCallback((id: string) => {
@@ -59,8 +54,7 @@ export default function MenuPage() {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    // Scroll to section (only visible when switching FROM filtered view to all+scroll)
-    // When in all-mode, jump directly to section
+
     requestAnimationFrame(() => {
       const el = sectionRefs.current[id];
       if (el) {
@@ -71,17 +65,15 @@ export default function MenuPage() {
     });
   }, []);
 
-  // IntersectionObserver — only runs in "all" mode, only updates scrollHighlight (never activeFilter)
+  // IntersectionObserver — только подсвечивает вкладку при скролле, не меняет контент
   useEffect(() => {
     if (isSearching || !isAllMode) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the topmost intersecting section
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-
         if (visible.length > 0) {
           setScrollHighlight(visible[0].target.id || "all");
         }
@@ -94,7 +86,6 @@ export default function MenuPage() {
     });
 
     return () => observer.disconnect();
-    // intentionally no activeFilter/scrollHighlight in deps — observer never changes filter
   }, [isSearching, isAllMode]);
 
   return (
@@ -141,17 +132,13 @@ export default function MenuPage() {
       )}
 
       {/* Menu grid */}
-      <div className="max-w-6xl mx-auto px-4 py-8 md:py-10">
+      <div className="max-w-6xl mx-auto px-4 py-6 md:py-10">
         {isSearching ? (
-          <div>
+          <>
             {searchResults.length > 0 ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {searchResults.map((item) => (
-                  <MenuCard
-                    key={item.id}
-                    item={item}
-                    onOpenModal={setModalItem}
-                  />
+                  <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
                 ))}
               </div>
             ) : (
@@ -161,19 +148,17 @@ export default function MenuPage() {
                 <p className="text-sm mt-1">Попробуйте другой запрос</p>
               </div>
             )}
-          </div>
+          </>
         ) : isAllMode ? (
-          /* All categories grouped view */
-          <div className="space-y-12">
+          /* Все категории */
+          <div className="space-y-10">
             {groupedByCategory.map((group) => (
               <section
                 key={group.id}
                 id={group.id}
-                ref={(el) => {
-                  sectionRefs.current[group.id] = el;
-                }}
+                ref={(el) => { sectionRefs.current[group.id] = el; }}
               >
-                <div className="flex items-center gap-3 mb-5">
+                <div className="flex items-center gap-3 mb-4">
                   <h2 className="text-xl md:text-2xl font-bold font-[family-name:var(--font-heading)]">
                     {group.name}
                   </h2>
@@ -181,37 +166,27 @@ export default function MenuPage() {
                     {group.items.length}
                   </span>
                 </div>
-                <Reveal>
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                    {group.items.map((item) => (
-                      <MenuCard
-                        key={item.id}
-                        item={item}
-                        onOpenModal={setModalItem}
-                      />
-                    ))}
-                  </div>
-                </Reveal>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                  {group.items.map((item) => (
+                    <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
+                  ))}
+                </div>
               </section>
             ))}
           </div>
         ) : (
-          /* Single category filtered view */
+          /* Одна категория */
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {filteredItems.map((item) => (
-              <MenuCard
-                key={item.id}
-                item={item}
-                onOpenModal={setModalItem}
-              />
+              <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
             ))}
           </div>
         )}
       </div>
 
-      {/* Sticky cart bar (mobile) */}
+      {/* Sticky cart bar — выше MobileNav на мобильном */}
       {totalItems > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:hidden">
+        <div className="fixed bottom-16 left-0 right-0 z-50 px-4 pb-2 md:bottom-4">
           <Link
             href="/cart"
             className="flex items-center justify-between bg-malina-500 text-white rounded-2xl px-5 py-4 shadow-2xl shadow-malina-500/30"
@@ -220,11 +195,7 @@ export default function MenuPage() {
               <ShoppingBag className="w-5 h-5" />
               <span className="font-bold text-sm">
                 {totalItems}{" "}
-                {totalItems === 1
-                  ? "товар"
-                  : totalItems < 5
-                  ? "товара"
-                  : "товаров"}
+                {totalItems === 1 ? "товар" : totalItems < 5 ? "товара" : "товаров"}
               </span>
             </div>
             <span className="font-bold">{formatPrice(totalPrice)}</span>
