@@ -186,7 +186,7 @@ export default function MenuPage() {
 
       {/* Sticky cart bar — выше MobileNav на мобильном */}
       {totalItems > 0 && (
-        <div className="fixed bottom-16 left-0 right-0 z-50 px-4 pb-2 md:bottom-4">
+        <div className="fixed bottom-16 left-0 right-0 z-50 pl-4 pr-20 pb-2 md:bottom-4 md:pr-24">
           <Link
             href="/cart"
             className="flex items-center justify-between bg-malina-500 text-white rounded-2xl px-5 py-4 shadow-2xl shadow-malina-500/30"
