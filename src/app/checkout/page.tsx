@@ -59,7 +59,10 @@ export default function CheckoutPage() {
 
   const now = new Date();
   const hour = now.getHours();
-  const isOpen = hour >= 10 && hour < 23;
+  const day = now.getDay();
+  const isWeekend = day === 0 || day === 6;
+  const openHour = isWeekend ? 11 : 10;
+  const isOpen = hour >= openHour && hour < 23;
 
   const isMinOrderMet = totalPrice >= 500;
   const minOrderRemaining = 500 - totalPrice;
