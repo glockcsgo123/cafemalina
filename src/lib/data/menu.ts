@@ -572,15 +572,6 @@ export const menuItems: MenuItem[] = [
     category: "rolls",
   },
   {
-    id: "roll-11",
-    name: "Чикен терияки",
-    description: "курица терияки, сыр сливочный, кунжут, огурец, соус терияки, лук зелёный, лист салата",
-    price: 365,
-    weight: "250г",
-    image: "/images/chiken-teriyaki.jpg",
-    category: "rolls",
-  },
-  {
     id: "roll-12",
     name: "Аляска",
     description: "крабовое мясо, сыр сливочный, кунжут, огурец",
@@ -673,7 +664,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "roll-23",
     name: "Лонг",
-    description: "сыр сливочный, курица копчёная, перец болгарский, бекон, унаги, лук фри",
+    description: "сыр сливочный, курица копчёная, перец болгарский, бекон, Унаги, лук фри",
     price: 425,
     weight: "230г",
     image: "/images/long.jpg",
@@ -709,7 +700,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "roll-29",
     name: "Фиджи спайси",
-    description: "сыр моцарелла, курица копченая, помидор, кунжут, соус спайси",
+    description: "сыр сливочный, курица копчёная, помидор, кунжут, соус спайси",
     price: 395,
     weight: "230г",
     image: "/images/fidzhi-spai-si.jpg",
@@ -1529,7 +1520,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "set-9",
     name: "Сет Фишка",
-    description: "Комета НОТ, Чикен чиз, Калифорния с лососем",
+    description: "Комета хот, Чикен чиз, Калифорния с лососем",
     price: 955,
     weight: "24шт/525г",
     image: "/images/set-fishka.jpg",
@@ -1601,7 +1592,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "set-17",
     name: "Сет Дзен",
-    description: "Зебра, Томаго-чиз, Чикен-чиз, Джус, Сёгун",
+    description: "Тамаго чиз, Чикен чиз, Джус, Зебра, Аляска",
     price: 1380,
     weight: "40шт/780г",
     image: "/images/set-dzen.jpg",
@@ -1646,7 +1637,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "set-22",
     name: "Сет Филадельфия 2XL",
-    description: "Филадельфия, hot с лососем, Запеченный с лососем, Сяке-маки, Экстаз",
+    description: "Филадельфия, Экстаз, Запечёный с лососем, Сяке маки, Хот с лососем",
     price: 1770,
     weight: "40шт/970г",
     image: "/images/set-fila-2xl.jpg",
