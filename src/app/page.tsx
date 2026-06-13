@@ -57,7 +57,7 @@ export default function HomePage() {
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link
-                  href="/#delivery"
+                  href="/delivery"
                   className="inline-flex items-center justify-center gap-2 bg-card/80 backdrop-blur border border-border font-medium px-6 py-4 rounded-2xl hover:bg-card hover:border-malina-500/20 transition-all duration-300 text-sm"
                 >
                   <Truck className="w-4 h-4 text-muted-foreground" />
