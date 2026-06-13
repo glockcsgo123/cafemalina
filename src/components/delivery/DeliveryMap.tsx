@@ -12,14 +12,17 @@ import { Search, MapPin, CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 declare global {
   interface Window {
-    ymaps: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ymaps: any;
   }
 }
 
 export function DeliveryMap() {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
-  const userPinRef = useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapInstance = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const userPinRef = useRef<any>(null);
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
@@ -29,18 +32,24 @@ export function DeliveryMap() {
 
   useEffect(() => {
     const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
+    // `active` flag prevents stale init after React StrictMode unmount
+    let active = true;
 
     function initMap() {
-      if (!mapRef.current || mapInstance.current) return;
-      const map = new window.ymaps.Map(
-        mapRef.current,
-        {
-          center: [CAFE_COORDS.lat, CAFE_COORDS.lng],
-          zoom: 11,
-          controls: ["zoomControl"],
-        },
-        { suppressMapOpenBlock: true },
-      );
+      if (!active || !mapRef.current || mapInstance.current) return;
+
+      const map = new window.ymaps.Map(mapRef.current, {
+        center: [CAFE_COORDS.lat, CAFE_COORDS.lng],
+        zoom: 11,
+        controls: ["zoomControl"],
+      });
+
+      // Guard again — component may have unmounted during Map constructor
+      if (!active) {
+        try { map.destroy(); } catch { /* ignore */ }
+        return;
+      }
+
       mapInstance.current = map;
 
       // Метка кафе
@@ -52,14 +61,12 @@ export function DeliveryMap() {
         ),
       );
 
-      // Круги зон от большего к меньшему
+      // Круги зон (от большего к меньшему, чтобы маленькие были поверх)
       ;[...DELIVERY_ZONES].reverse().forEach((zone) => {
         map.geoObjects.add(
           new window.ymaps.Circle(
             [[CAFE_COORDS.lat, CAFE_COORDS.lng], zone.radius * 1000],
-            {
-              balloonContent: `${zone.label} — от ${zone.minOrder.toLocaleString("ru")} ₽`,
-            },
+            { balloonContent: `${zone.label} — от ${zone.minOrder.toLocaleString("ru")} ₽` },
             {
               fillColor: zone.color + "33",
               strokeColor: zone.color,
@@ -71,26 +78,44 @@ export function DeliveryMap() {
       });
     }
 
-    if (typeof window !== "undefined" && window.ymaps) {
-      window.ymaps.ready(initMap);
-      return;
+    function bootstrap() {
+      if (window.ymaps) {
+        window.ymaps.ready(initMap);
+        return;
+      }
+
+      const existing = document.querySelector(
+        'script[src*="api-maps.yandex.ru"]',
+      ) as HTMLScriptElement | null;
+
+      if (existing) {
+        // Script tag already in DOM (e.g. StrictMode second mount after fast load)
+        existing.addEventListener("load", () => {
+          if (active) window.ymaps?.ready(initMap);
+        });
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`;
+      script.async = true;
+      script.onload = () => {
+        if (active) window.ymaps.ready(initMap);
+      };
+      document.head.appendChild(script);
     }
 
-    const existingScript = document.querySelector(
-      'script[src*="api-maps.yandex.ru"]',
-    );
-    if (existingScript) {
-      existingScript.addEventListener("load", () =>
-        window.ymaps?.ready(initMap),
-      );
-      return;
-    }
+    bootstrap();
 
-    const script = document.createElement("script");
-    script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`;
-    script.async = true;
-    script.onload = () => window.ymaps.ready(initMap);
-    document.head.appendChild(script);
+    // Cleanup: destroy map so StrictMode second mount starts fresh
+    return () => {
+      active = false;
+      if (mapInstance.current) {
+        try { mapInstance.current.destroy(); } catch { /* ignore */ }
+        mapInstance.current = null;
+      }
+      userPinRef.current = null;
+    };
   }, []);
 
   async function checkAddress() {
@@ -109,7 +134,6 @@ export function DeliveryMap() {
     setResult({ zone, found: true });
 
     if (mapInstance.current && window.ymaps) {
-      // Убрать предыдущую метку пользователя
       if (userPinRef.current) {
         mapInstance.current.geoObjects.remove(userPinRef.current);
       }
@@ -152,9 +176,7 @@ export function DeliveryMap() {
             />
             <div>
               <p className="text-xs font-semibold">{zone.label}</p>
-              <p className="text-xs text-muted-foreground">
-                до {zone.radius} км
-              </p>
+              <p className="text-xs text-muted-foreground">до {zone.radius} км</p>
               <p className="text-xs font-medium" style={{ color: zone.color }}>
                 от {zone.minOrder.toLocaleString("ru")} ₽
               </p>
@@ -190,7 +212,7 @@ export function DeliveryMap() {
         </button>
       </div>
 
-      {/* Результат */}
+      {/* Результат проверки */}
       {result && (
         <div
           className={`flex items-start gap-3 p-4 rounded-xl border ${
@@ -203,14 +225,10 @@ export function DeliveryMap() {
             <>
               <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-green-800 text-sm">
-                  Доставляем!
-                </p>
+                <p className="font-semibold text-green-800 text-sm">Доставляем!</p>
                 <p className="text-sm text-green-700">
                   {result.zone.label} · минимальный заказ{" "}
-                  <strong>
-                    {result.zone.minOrder.toLocaleString("ru")} ₽
-                  </strong>
+                  <strong>{result.zone.minOrder.toLocaleString("ru")} ₽</strong>
                 </p>
               </div>
             </>
@@ -219,16 +237,11 @@ export function DeliveryMap() {
               <XCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-red-800 text-sm">
-                  {result.found
-                    ? "Адрес вне зоны доставки"
-                    : "Адрес не найден"}
+                  {result.found ? "Адрес вне зоны доставки" : "Адрес не найден"}
                 </p>
                 <p className="text-sm text-red-700">
                   Позвоните нам:{" "}
-                  <a
-                    href="tel:+79107403111"
-                    className="font-medium underline"
-                  >
+                  <a href="tel:+79107403111" className="font-medium underline">
                     +7 (910) 740-31-11
                   </a>
                 </p>
@@ -238,10 +251,10 @@ export function DeliveryMap() {
         </div>
       )}
 
-      {/* Карта */}
+      {/* Карта — без overflow-hidden, иначе balloon'ы обрезаются */}
       <div
         ref={mapRef}
-        className="w-full h-[420px] rounded-2xl overflow-hidden border border-border"
+        className="w-full h-[420px] rounded-2xl border border-border"
       />
     </div>
   );
