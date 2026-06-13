@@ -1,4 +1,4 @@
-export const CAFE_COORDS = { lat: 51.6553, lng: 36.1977 }
+export const CAFE_COORDS = { lat: 51.647, lng: 35.951 }
 
 export const DELIVERY_ZONES = [
   { id: 1, radius: 2,  minOrder: 1500, color: "#22c55e", label: "Зона 1" },
