@@ -20,23 +20,49 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // Local string state for numeric fields — prevents "0 can't be cleared" bug
+  const [minOrder, setMinOrder] = useState("");
+  const [freeDelivery, setFreeDelivery] = useState("");
+  const [hoursOpen, setHoursOpen] = useState("");
+  const [hoursClose, setHoursClose] = useState("");
+
   useEffect(() => {
     fetch("/api/settings")
       .then((r) => {
         if (!r.ok) throw new Error(`${r.status}`);
         return r.json();
       })
-      .then(setSettings)
+      .then((data: Settings) => {
+        setSettings(data);
+        setMinOrder(String(data.minOrderAmount ?? ""));
+        setFreeDelivery(String(data.freeDeliveryAmount ?? ""));
+        setHoursOpen(String(data.workingHours?.open ?? ""));
+        setHoursClose(String(data.workingHours?.close ?? ""));
+      })
       .catch(() => setSettings(null));
   }, []);
 
+  const flushNumericFields = (): Settings | null => {
+    if (!settings) return null;
+    return {
+      ...settings,
+      minOrderAmount: parseInt(minOrder) || 0,
+      freeDeliveryAmount: parseInt(freeDelivery) || 0,
+      workingHours: {
+        open: parseInt(hoursOpen) || 0,
+        close: parseInt(hoursClose) || 0,
+      },
+    };
+  };
+
   const handleSave = async () => {
-    if (!settings) return;
+    const payload = flushNumericFields();
+    if (!payload) return;
     setSaving(true);
     await fetch("/api/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(settings),
+      body: JSON.stringify(payload),
     });
     setSaving(false);
     setSaved(true);
@@ -51,26 +77,8 @@ export default function AdminSettingsPage() {
     return <div className="p-8 text-red-500 text-sm">Ошибка загрузки настроек. Обновите страницу.</div>;
   }
 
-  const field = (
-    label: string,
-    key: keyof Settings,
-    type: "text" | "number" = "text"
-  ) => (
-    <div>
-      <label className="block text-sm font-medium mb-1.5">{label}</label>
-      <input
-        type={type}
-        value={settings[key] as string | number}
-        onChange={(e) =>
-          setSettings((prev) => ({
-            ...prev!,
-            [key]: type === "number" ? Number(e.target.value) : e.target.value,
-          }))
-        }
-        className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-malina-500/30 focus:border-malina-500"
-      />
-    </div>
-  );
+  const inputClass =
+    "w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-malina-500/30 focus:border-malina-500";
 
   return (
     <div className="p-6 md:p-8 max-w-2xl">
@@ -94,9 +102,33 @@ export default function AdminSettingsPage() {
         <section className="bg-card border border-border rounded-2xl p-5">
           <h2 className="font-bold mb-4 text-base">Контакты</h2>
           <div className="space-y-4">
-            {field("Телефон (для звонка)", "phone")}
-            {field("Телефон (для отображения)", "phoneDisplay")}
-            {field("Адрес", "address")}
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Телефон (для звонка)</label>
+              <input
+                type="text"
+                value={settings.phone}
+                onChange={(e) => setSettings((prev) => ({ ...prev!, phone: e.target.value }))}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Телефон (для отображения)</label>
+              <input
+                type="text"
+                value={settings.phoneDisplay}
+                onChange={(e) => setSettings((prev) => ({ ...prev!, phoneDisplay: e.target.value }))}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Адрес</label>
+              <input
+                type="text"
+                value={settings.address}
+                onChange={(e) => setSettings((prev) => ({ ...prev!, address: e.target.value }))}
+                className={inputClass}
+              />
+            </div>
           </div>
         </section>
 
@@ -110,14 +142,18 @@ export default function AdminSettingsPage() {
                 type="number"
                 min={0}
                 max={23}
-                value={settings.workingHours.open}
-                onChange={(e) =>
+                placeholder="0"
+                value={hoursOpen}
+                onChange={(e) => setHoursOpen(e.target.value)}
+                onBlur={() => {
+                  const val = parseInt(hoursOpen) || 0;
+                  setHoursOpen(String(val));
                   setSettings((prev) => ({
                     ...prev!,
-                    workingHours: { ...prev!.workingHours, open: Number(e.target.value) },
-                  }))
-                }
-                className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none"
+                    workingHours: { ...prev!.workingHours, open: val },
+                  }));
+                }}
+                className={inputClass}
               />
             </div>
             <div>
@@ -126,14 +162,18 @@ export default function AdminSettingsPage() {
                 type="number"
                 min={0}
                 max={23}
-                value={settings.workingHours.close}
-                onChange={(e) =>
+                placeholder="0"
+                value={hoursClose}
+                onChange={(e) => setHoursClose(e.target.value)}
+                onBlur={() => {
+                  const val = parseInt(hoursClose) || 0;
+                  setHoursClose(String(val));
                   setSettings((prev) => ({
                     ...prev!,
-                    workingHours: { ...prev!.workingHours, close: Number(e.target.value) },
-                  }))
-                }
-                className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none"
+                    workingHours: { ...prev!.workingHours, close: val },
+                  }));
+                }}
+                className={inputClass}
               />
             </div>
           </div>
@@ -143,9 +183,47 @@ export default function AdminSettingsPage() {
         <section className="bg-card border border-border rounded-2xl p-5">
           <h2 className="font-bold mb-4 text-base">Доставка</h2>
           <div className="space-y-4">
-            {field("Минимальная сумма заказа (₽)", "minOrderAmount", "number")}
-            {field("Бесплатная доставка от (₽)", "freeDeliveryAmount", "number")}
-            {field("Время доставки", "deliveryTime")}
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Минимальная сумма заказа (₽)</label>
+              <input
+                type="number"
+                min="0"
+                placeholder="0"
+                value={minOrder}
+                onChange={(e) => setMinOrder(e.target.value)}
+                onBlur={() => {
+                  const val = parseInt(minOrder) || 0;
+                  setMinOrder(String(val));
+                  setSettings((prev) => ({ ...prev!, minOrderAmount: val }));
+                }}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Бесплатная доставка от (₽)</label>
+              <input
+                type="number"
+                min="0"
+                placeholder="0"
+                value={freeDelivery}
+                onChange={(e) => setFreeDelivery(e.target.value)}
+                onBlur={() => {
+                  const val = parseInt(freeDelivery) || 0;
+                  setFreeDelivery(String(val));
+                  setSettings((prev) => ({ ...prev!, freeDeliveryAmount: val }));
+                }}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Время доставки</label>
+              <input
+                type="text"
+                value={settings.deliveryTime}
+                onChange={(e) => setSettings((prev) => ({ ...prev!, deliveryTime: e.target.value }))}
+                className={inputClass}
+              />
+            </div>
           </div>
         </section>
 
@@ -153,7 +231,15 @@ export default function AdminSettingsPage() {
         <section className="bg-card border border-border rounded-2xl p-5">
           <h2 className="font-bold mb-4 text-base">Hero-секция</h2>
           <div className="space-y-4">
-            {field("Заголовок", "heroTitle")}
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Заголовок</label>
+              <input
+                type="text"
+                value={settings.heroTitle}
+                onChange={(e) => setSettings((prev) => ({ ...prev!, heroTitle: e.target.value }))}
+                className={inputClass}
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Подзаголовок</label>
               <textarea

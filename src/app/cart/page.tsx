@@ -13,7 +13,6 @@ export default function CartPage() {
   const total = useCartStore(selectTotalPrice);
   const count = useCartStore(selectTotalItems);
 
-  const minOrder = siteConfig.delivery.minOrder;
   const freeFrom = siteConfig.delivery.freeDeliveryFrom;
 
   if (count === 0) {
@@ -57,21 +56,9 @@ export default function CartPage() {
           <span className="text-2xl font-extrabold tracking-tight">{formatPrice(total)}</span>
         </div>
 
-        {total < minOrder && (
-          <p className="text-xs text-orange-600 bg-orange-50 border border-orange-100 rounded-xl px-3 py-2 mb-4">
-            Минимальная сумма заказа — {formatPrice(minOrder)}. Добавьте ещё {formatPrice(minOrder - total)}.
-          </p>
-        )}
-
         <Link
-          href={total >= minOrder ? "/checkout" : "#"}
-          className={`flex items-center justify-center gap-2 w-full font-bold text-base py-4 rounded-2xl transition-all ${
-            total >= minOrder
-              ? "bg-malina-500 text-white hover:bg-malina-600 shadow-lg shadow-malina-500/20 active:scale-[0.98]"
-              : "bg-muted text-muted-foreground cursor-not-allowed"
-          }`}
-          aria-disabled={total < minOrder}
-          onClick={(e) => { if (total < minOrder) e.preventDefault(); }}
+          href="/checkout"
+          className="flex items-center justify-center gap-2 w-full font-bold text-base py-4 rounded-2xl transition-all bg-malina-500 text-white hover:bg-malina-600 shadow-lg shadow-malina-500/20 active:scale-[0.98]"
         >
           Оформить заказ
           <ArrowRight className="w-5 h-5" />

@@ -44,7 +44,7 @@ export const siteConfig = {
   // --- Условия доставки ---
   // [УТОЧНИТЬ] Точные условия доставки требуют подтверждения
   delivery: {
-    minOrder: 500,
+    minOrder: 0,
     freeDeliveryFrom: 1500,
     deliveryTime: "от 60 минут",
     zone: "Прямицыно и окрестности",
