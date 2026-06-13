@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
+import { DELIVERY_ZONES } from "@/lib/delivery";
+
+interface ZoneRecord {
+  id: number;
+  radius: number;
+  minOrder: number;
+}
 
 interface Settings {
   phone: string;
@@ -13,18 +20,28 @@ interface Settings {
   deliveryTime: string;
   heroTitle: string;
   heroSubtitle: string;
+  deliveryZones?: ZoneRecord[];
 }
+
+const DEFAULT_ZONES: ZoneRecord[] = DELIVERY_ZONES.map((z) => ({
+  id: z.id,
+  radius: z.radius,
+  minOrder: z.minOrder,
+}));
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Settings | null | undefined>(undefined);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  // Local string state for numeric fields — prevents "0 can't be cleared" bug
+  // Local string state for numeric scalar fields
   const [minOrder, setMinOrder] = useState("");
   const [freeDelivery, setFreeDelivery] = useState("");
   const [hoursOpen, setHoursOpen] = useState("");
   const [hoursClose, setHoursClose] = useState("");
+
+  // Local string state for zone rows — [{radius, minOrder}]
+  const [zoneStrings, setZoneStrings] = useState<{ radius: string; minOrder: string }[]>([]);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -38,27 +55,45 @@ export default function AdminSettingsPage() {
         setFreeDelivery(String(data.freeDeliveryAmount ?? ""));
         setHoursOpen(String(data.workingHours?.open ?? ""));
         setHoursClose(String(data.workingHours?.close ?? ""));
+        const zones = data.deliveryZones ?? DEFAULT_ZONES;
+        setZoneStrings(zones.map((z) => ({ radius: String(z.radius), minOrder: String(z.minOrder) })));
       })
       .catch(() => setSettings(null));
   }, []);
 
-  const flushNumericFields = (): Settings | null => {
-    if (!settings) return null;
+  const updateZoneString = (
+    idx: number,
+    field: "radius" | "minOrder",
+    value: string,
+  ) => {
+    setZoneStrings((prev) =>
+      prev.map((z, i) => (i === idx ? { ...z, [field]: value } : z)),
+    );
+  };
+
+  const buildPayload = (): Settings => {
+    const zones = (settings?.deliveryZones ?? DEFAULT_ZONES).map((z, i) => ({
+      id: z.id,
+      radius: parseInt(zoneStrings[i]?.radius ?? "") || z.radius,
+      minOrder: parseInt(zoneStrings[i]?.minOrder ?? "") || z.minOrder,
+    }));
+
     return {
-      ...settings,
+      ...settings!,
       minOrderAmount: parseInt(minOrder) || 0,
       freeDeliveryAmount: parseInt(freeDelivery) || 0,
       workingHours: {
         open: parseInt(hoursOpen) || 0,
         close: parseInt(hoursClose) || 0,
       },
+      deliveryZones: zones,
     };
   };
 
   const handleSave = async () => {
-    const payload = flushNumericFields();
-    if (!payload) return;
+    if (!settings) return;
     setSaving(true);
+    const payload = buildPayload();
     await fetch("/api/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -74,7 +109,11 @@ export default function AdminSettingsPage() {
   }
 
   if (settings === null) {
-    return <div className="p-8 text-red-500 text-sm">Ошибка загрузки настроек. Обновите страницу.</div>;
+    return (
+      <div className="p-8 text-red-500 text-sm">
+        Ошибка загрузки настроек. Обновите страницу.
+      </div>
+    );
   }
 
   const inputClass =
@@ -225,6 +264,63 @@ export default function AdminSettingsPage() {
               />
             </div>
           </div>
+        </section>
+
+        {/* Delivery Zones */}
+        <section className="bg-card border border-border rounded-2xl p-5">
+          <h2 className="font-bold mb-1 text-base">Зоны доставки</h2>
+          <p className="text-xs text-muted-foreground mb-4">
+            Радиус от кафе и минимальная сумма заказа для каждой зоны
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left pb-3 font-medium text-muted-foreground pr-4">Зона</th>
+                  <th className="text-left pb-3 font-medium text-muted-foreground pr-4">Радиус (км)</th>
+                  <th className="text-left pb-3 font-medium text-muted-foreground">Минимум (₽)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {DELIVERY_ZONES.map((zone, i) => (
+                  <tr key={zone.id}>
+                    <td className="py-3 pr-4">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-3 h-3 rounded-full shrink-0"
+                          style={{ backgroundColor: zone.color }}
+                        />
+                        <span className="font-medium">{zone.label}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 pr-4">
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder={String(zone.radius)}
+                        value={zoneStrings[i]?.radius ?? ""}
+                        onChange={(e) => updateZoneString(i, "radius", e.target.value)}
+                        className="w-24 px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-malina-500/30 focus:border-malina-500"
+                      />
+                    </td>
+                    <td className="py-3">
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder={String(zone.minOrder)}
+                        value={zoneStrings[i]?.minOrder ?? ""}
+                        onChange={(e) => updateZoneString(i, "minOrder", e.target.value)}
+                        className="w-28 px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-malina-500/30 focus:border-malina-500"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            Нажмите «Сохранить» чтобы применить изменения
+          </p>
         </section>
 
         {/* Hero */}

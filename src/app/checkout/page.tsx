@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Send, Info, Plus, Minus, Clock } from "lucide-react";
+import {
+  ArrowLeft, Send, Info, Plus, Minus, Clock,
+  CheckCircle, XCircle, Loader2,
+} from "lucide-react";
 import { useCartStore, selectTotalItems, selectTotalPrice } from "@/lib/store/cart";
 import { menuItems } from "@/lib/data/menu";
 import { formatPrice } from "@/lib/utils";
+import { geocodeAddress, getDeliveryZone, type DeliveryZone } from "@/lib/delivery";
 
 function formatPhone(raw: string): string {
   const digits = raw.replace(/\D/g, "").slice(0, 11);
@@ -46,7 +50,18 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  // Upsell: soy sauce first, then drinks
+  // Зона доставки
+  const [deliveryZone, setDeliveryZone] = useState<DeliveryZone | null | "outside">(null);
+  const [zoneLoading, setZoneLoading] = useState(false);
+  const addressTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (addressTimeout.current) clearTimeout(addressTimeout.current);
+    };
+  }, []);
+
+  // Upsell
   const soySauce = menuItems.find((item) => item.id === "sauce-5");
   const drinkItems = menuItems.filter((item) => item.category === "drinks");
   const upsellItems = [soySauce, ...drinkItems].filter(Boolean) as typeof menuItems;
@@ -64,8 +79,10 @@ export default function CheckoutPage() {
   const openHour = isWeekend ? 11 : 10;
   const isOpen = hour >= openHour && hour < 23;
 
-  const isMinOrderMet = totalPrice >= 500;
-  const minOrderRemaining = 500 - totalPrice;
+  // Зона-специфичный минимальный заказ
+  const activeZone = deliveryZone !== null && deliveryZone !== "outside" ? deliveryZone : null;
+  const isOutsideZone = deliveryZone === "outside";
+  const isZoneMinOrderMet = activeZone === null || totalPrice >= activeZone.minOrder;
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -122,20 +139,44 @@ export default function CheckoutPage() {
     }
   };
 
+  const handleAddressChange = (value: string) => {
+    updateField("address", value);
+    if (addressTimeout.current) clearTimeout(addressTimeout.current);
+    if (value.length < 5) {
+      setDeliveryZone(null);
+      return;
+    }
+    addressTimeout.current = setTimeout(async () => {
+      setZoneLoading(true);
+      try {
+        const coords = await geocodeAddress(value);
+        if (coords) {
+          const zone = getDeliveryZone(coords.lat, coords.lng);
+          setDeliveryZone(zone ?? "outside");
+        } else {
+          setDeliveryZone(null);
+        }
+      } finally {
+        setZoneLoading(false);
+      }
+    }, 800);
+  };
+
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const formatted = formatPhone(raw);
-    updateField("phone", formatted);
+    updateField("phone", formatPhone(e.target.value));
   };
 
   const handlePhonePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text");
-    const formatted = formatPhone(pasted);
-    updateField("phone", formatted);
+    updateField("phone", formatPhone(e.clipboardData.getData("text")));
   };
 
-  const canSubmit = !submitting && privacyAccepted && isPhoneComplete(form.phone) && isMinOrderMet;
+  const canSubmit =
+    !submitting &&
+    privacyAccepted &&
+    isPhoneComplete(form.phone) &&
+    !isOutsideZone &&
+    isZoneMinOrderMet;
 
   if (totalItems === 0) {
     return (
@@ -198,7 +239,7 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            {/* Телефон с маской */}
+            {/* Телефон */}
             <div>
               <label className="block text-sm font-medium mb-1.5">
                 Телефон <span className="text-malina-500">*</span>
@@ -218,7 +259,7 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            {/* Адрес */}
+            {/* Адрес с проверкой зоны */}
             <div>
               <label className="block text-sm font-medium mb-1.5">
                 Адрес доставки <span className="text-malina-500">*</span>
@@ -226,14 +267,41 @@ export default function CheckoutPage() {
               <input
                 type="text"
                 value={form.address}
-                onChange={(e) => updateField("address", e.target.value)}
+                onChange={(e) => handleAddressChange(e.target.value)}
                 placeholder="Улица, дом"
                 className={`w-full px-4 py-3 rounded-xl border bg-card text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-malina-500/30 focus:border-malina-500 ${
-                  errors.address ? "border-red-300 bg-red-50/50" : "border-border"
+                  errors.address || isOutsideZone
+                    ? "border-red-300 bg-red-50/50"
+                    : activeZone
+                      ? "border-green-400"
+                      : "border-border"
                 }`}
               />
               {errors.address && (
                 <p className="text-xs text-red-600 mt-1.5">{errors.address}</p>
+              )}
+              {/* Индикатор зоны */}
+              {!errors.address && (
+                <>
+                  {zoneLoading && (
+                    <p className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1.5">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Определяем зону доставки...
+                    </p>
+                  )}
+                  {!zoneLoading && activeZone && (
+                    <p className="flex items-center gap-1.5 text-xs text-green-700 mt-1.5">
+                      <CheckCircle className="h-3 w-3" />
+                      {activeZone.label} · минимальный заказ {activeZone.minOrder.toLocaleString("ru")} ₽
+                    </p>
+                  )}
+                  {!zoneLoading && isOutsideZone && (
+                    <p className="flex items-center gap-1.5 text-xs text-red-600 mt-1.5">
+                      <XCircle className="h-3 w-3" />
+                      Адрес вне зоны доставки — позвоните нам
+                    </p>
+                  )}
+                </>
               )}
             </div>
 
@@ -265,9 +333,7 @@ export default function CheckoutPage() {
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="w-10 text-center font-bold text-sm">
-                    {persons}
-                  </span>
+                  <span className="w-10 text-center font-bold text-sm">{persons}</span>
                   <button
                     type="button"
                     onClick={() => setPersons((p) => Math.min(20, p + 1))}
@@ -297,7 +363,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Order summary — sidebar */}
+          {/* Order summary sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-20 space-y-4">
               {/* Items */}
@@ -305,17 +371,11 @@ export default function CheckoutPage() {
                 <h3 className="font-bold text-sm mb-4">Ваш заказ</h3>
                 <div className="space-y-3 mb-4 max-h-48 overflow-y-auto">
                   {items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between gap-2"
-                    >
+                    <div key={item.id} className="flex items-center justify-between gap-2">
                       <span className="text-sm truncate flex-1">
                         {item.name}
                         {item.quantity > 1 && (
-                          <span className="text-muted-foreground">
-                            {" "}
-                            x{item.quantity}
-                          </span>
+                          <span className="text-muted-foreground"> x{item.quantity}</span>
                         )}
                       </span>
                       <span className="text-sm font-medium whitespace-nowrap">
@@ -326,9 +386,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="border-t border-border pt-3 flex items-center justify-between">
                   <span className="font-bold">Итого</span>
-                  <span className="text-xl font-extrabold">
-                    {formatPrice(totalPrice)}
-                  </span>
+                  <span className="text-xl font-extrabold">{formatPrice(totalPrice)}</span>
                 </div>
               </div>
 
@@ -337,13 +395,9 @@ export default function CheckoutPage() {
                 <h4 className="text-sm font-bold mb-3">Добавить к заказу?</h4>
                 <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
                   {upsellItems.map((uItem) => {
-                    const cartQty =
-                      items.find((i) => i.id === uItem.id)?.quantity || 0;
+                    const cartQty = items.find((i) => i.id === uItem.id)?.quantity || 0;
                     return (
-                      <div
-                        key={uItem.id}
-                        className="flex flex-col items-center gap-1.5 shrink-0 w-16"
-                      >
+                      <div key={uItem.id} className="flex flex-col items-center gap-1.5 shrink-0 w-16">
                         <img
                           src={uItem.image}
                           alt={uItem.name}
@@ -359,12 +413,7 @@ export default function CheckoutPage() {
                           <button
                             type="button"
                             onClick={() =>
-                              addItem({
-                                id: uItem.id,
-                                name: uItem.name,
-                                price: uItem.price,
-                                image: uItem.image,
-                              })
+                              addItem({ id: uItem.id, name: uItem.name, price: uItem.price, image: uItem.image })
                             }
                             className="w-7 h-7 rounded-full bg-malina-500 text-white flex items-center justify-center hover:bg-malina-600 transition-colors"
                           >
@@ -374,21 +423,15 @@ export default function CheckoutPage() {
                           <div className="flex items-center gap-0.5">
                             <button
                               type="button"
-                              onClick={() =>
-                                updateQuantity(uItem.id, cartQty - 1)
-                              }
+                              onClick={() => updateQuantity(uItem.id, cartQty - 1)}
                               className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center hover:bg-warm-200 transition-colors"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
-                            <span className="w-5 text-center text-xs font-bold">
-                              {cartQty}
-                            </span>
+                            <span className="w-5 text-center text-xs font-bold">{cartQty}</span>
                             <button
                               type="button"
-                              onClick={() =>
-                                updateQuantity(uItem.id, cartQty + 1)
-                              }
+                              onClick={() => updateQuantity(uItem.id, cartQty + 1)}
                               className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center hover:bg-warm-200 transition-colors"
                             >
                               <Plus className="w-3 h-3" />
@@ -401,7 +444,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment method selector */}
+              {/* Payment */}
               <div className="bg-card border border-border rounded-2xl p-4">
                 <h4 className="text-sm font-bold mb-3">Способ оплаты</h4>
                 <div className="space-y-2">
@@ -410,8 +453,8 @@ export default function CheckoutPage() {
                       key={method.id}
                       className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors ${
                         selectedPayment === method.id
-                          ? "border-[#BE1E5A] bg-[#BE1E5A]/5"
-                          : "border-border hover:border-[#BE1E5A]/40"
+                          ? "border-malina-500 bg-malina-500/5"
+                          : "border-border hover:border-malina-500/40"
                       }`}
                     >
                       <input
@@ -430,9 +473,11 @@ export default function CheckoutPage() {
               </div>
 
               {/* Working hours */}
-              <div className={`flex items-center gap-2 text-sm rounded-xl px-4 py-3 ${
-                isOpen ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"
-              }`}>
+              <div
+                className={`flex items-center gap-2 text-sm rounded-xl px-4 py-3 ${
+                  isOpen ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"
+                }`}
+              >
                 <Clock className="w-4 h-4 shrink-0" />
                 <span>
                   {isOpen
@@ -441,7 +486,7 @@ export default function CheckoutPage() {
                 </span>
               </div>
 
-              {/* Privacy consent */}
+              {/* Privacy */}
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -451,24 +496,20 @@ export default function CheckoutPage() {
                 />
                 <span className="text-xs text-muted-foreground leading-relaxed">
                   Я соглашаюсь с{" "}
-                  <Link
-                    href="/privacy"
-                    target="_blank"
-                    className="text-malina-500 underline hover:text-malina-600"
-                  >
+                  <Link href="/privacy" target="_blank" className="text-malina-500 underline hover:text-malina-600">
                     обработкой персональных данных
                   </Link>
                 </span>
               </label>
 
-              {/* Error */}
+              {/* Submit error */}
               {submitError && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700 text-center">
                   {submitError}
                 </div>
               )}
 
-              {/* Submit */}
+              {/* Submit button */}
               <button
                 type="submit"
                 disabled={!canSubmit}
@@ -484,9 +525,16 @@ export default function CheckoutPage() {
                 )}
               </button>
 
-              {!isMinOrderMet && (
+              {/* Зона-предупреждения */}
+              {isOutsideZone && (
+                <p className="text-sm text-center text-red-600">
+                  Ваш адрес вне зоны доставки. Позвоните нам — поможем разобраться.
+                </p>
+              )}
+              {!isOutsideZone && activeZone && !isZoneMinOrderMet && (
                 <p className="text-sm text-center text-orange-600">
-                  Минимальный заказ — 500 ₽. Добавьте ещё на {minOrderRemaining} ₽
+                  Минимальный заказ для вашей зоны — {activeZone.minOrder.toLocaleString("ru")} ₽.
+                  Добавьте ещё на {formatPrice(activeZone.minOrder - totalPrice)}
                 </p>
               )}
 

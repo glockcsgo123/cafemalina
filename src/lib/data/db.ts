@@ -16,11 +16,17 @@ export const DEFAULT_SETTINGS = {
   phoneDisplay: "+7 (910) 740-31-11",
   address: "Курская обл., р.п. Прямицыно, ул. Коммунистическая, 28",
   workingHours: { open: 10, close: 23 },
-  minOrderAmount: 500,
+  minOrderAmount: 0,
   freeDeliveryAmount: 1000,
   deliveryTime: "от 40 минут",
   heroTitle: "Пицца и роллы с доставкой",
   heroSubtitle: "Готовим каждый день: пицца, роллы, сеты — быстро и вкусно.",
+  deliveryZones: [
+    { id: 1, radius: 2,  minOrder: 1500 },
+    { id: 2, radius: 5,  minOrder: 1800 },
+    { id: 3, radius: 10, minOrder: 2100 },
+    { id: 4, radius: 18, minOrder: 2400 },
+  ],
 };
 
 function ensureDir() {
