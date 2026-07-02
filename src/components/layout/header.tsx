@@ -34,7 +34,7 @@ export function Header() {
             Меню
           </Link>
           <Link
-            href="/#delivery"
+            href="/delivery"
             className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
           >
             Доставка

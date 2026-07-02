@@ -479,7 +479,7 @@ export const menuItems: MenuItem[] = [
     name: "Чеддер с говядиной",
     description: "говядина, моцарелла, чеддер, перец болгарский, лук, огурцы солёные, помидоры, лук зелёный, соус фирменный",
     price: 880,
-    image: "/images/placeholder-pizza.svg",
+    image: "/images/pizza-cheder.jpg",
     category: "pizza",
     variants: [
       { label: "32 см", price: 880 },
@@ -849,7 +849,7 @@ export const menuItems: MenuItem[] = [
     description: "сыр сливочный, креветка темпура, масаго, салат чука, соус ореховый",
     price: 445,
     weight: "200г",
-    image: "/images/placeholder-roll.svg",
+    image: "/images/naomi-maki.jpg",
     category: "rolls",
   },
   {
@@ -953,7 +953,7 @@ export const menuItems: MenuItem[] = [
     description: "сыр сливочный, лосось, огурец, кунжут, унаги, сладкий чилли",
     price: 485,
     weight: "250г",
-    image: "/images/placeholder-roll.svg",
+    image: "/images/status.jpg",
     category: "rolls",
   },
   {
@@ -1198,7 +1198,7 @@ export const menuItems: MenuItem[] = [
     description: "сыр сливочный, креветка темпура, огурец, сырный соус, унаги, икра масаго",
     price: 485,
     weight: "245г",
-    image: "/images/placeholder-roll.svg",
+    image: "/images/samurai.jpg",
     category: "rolls",
   },
   {
@@ -1477,7 +1477,7 @@ export const menuItems: MenuItem[] = [
     description: "Калифорния запечёная, Миками, Кани Чиз",
     price: 925,
     weight: "24шт/635г",
-    image: "/images/placeholder-roll.jpg",
+    image: "/images/set-rio.jpg",
     category: "sets",
   },
   {
@@ -1523,7 +1523,7 @@ export const menuItems: MenuItem[] = [
     description: "Комета хот, Чикен чиз, Калифорния с лососем",
     price: 955,
     weight: "24шт/525г",
-    image: "/images/placeholder-roll.jpg",
+    image: "/images/set-fishka.jpg",
     category: "sets",
   },
   {
@@ -1568,7 +1568,7 @@ export const menuItems: MenuItem[] = [
     description: "Дабл лосось, Чикен бекон, Запечёный спайси с креветкой, Микассо",
     price: 1570,
     weight: "32шт/940г",
-    image: "/images/placeholder-roll.jpg",
+    image: "/images/set-fresh.jpg",
     category: "sets",
   },
   {
@@ -1676,7 +1676,7 @@ export const menuItems: MenuItem[] = [
     description: "Дубай, Аляска, Оваро, Тэмари, Сёко, Филадельфия с угрём, Фрай Эби hot, Хокай hot",
     price: 3120,
     weight: "54шт/1740г",
-    image: "/images/placeholder-roll.svg",
+    image: "/images/set-solnce.jpg",
     category: "sets",
   },
   {
