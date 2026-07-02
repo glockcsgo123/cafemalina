@@ -858,7 +858,7 @@ export const menuItems: MenuItem[] = [
     description: "терияки",
     price: 165,
     weight: "100г",
-    image: "/images/placeholder-roll.svg",
+    image: "/images/teriyaki-maki.jpg",
     category: "rolls",
   },
 
@@ -1640,7 +1640,7 @@ export const menuItems: MenuItem[] = [
     description: "Филадельфия, Экстаз, Запечёный с лососем, Сяке маки, Хот с лососем",
     price: 1770,
     weight: "40шт/970г",
-    image: "/images/placeholder-roll.jpg",
+    image: "/images/set-fila-2xl.jpg",
     category: "sets",
   },
   {
