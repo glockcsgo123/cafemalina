@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, UtensilsCrossed, ShoppingBag } from "lucide-react";
+import { Home, UtensilsCrossed, ShoppingBag, Truck } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
 
 export function MobileNav() {
@@ -16,6 +16,7 @@ export function MobileNav() {
   const links = [
     { href: "/", icon: Home, label: "Главная", badge: 0 },
     { href: "/menu", icon: UtensilsCrossed, label: "Меню", badge: 0 },
+    { href: "/delivery", icon: Truck, label: "Доставка", badge: 0 },
     { href: "/cart", icon: ShoppingBag, label: "Корзина", badge: cartCount },
   ];
 

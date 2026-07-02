@@ -97,7 +97,7 @@ export function DeliveryMap() {
       }
 
       const script = document.createElement("script");
-      script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`;
+      script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU&load=package.full`;
       script.async = true;
       script.onload = () => {
         if (active) window.ymaps.ready(initMap);
