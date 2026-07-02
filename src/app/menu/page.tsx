@@ -5,10 +5,23 @@ import { Search, X, ShoppingBag } from "lucide-react";
 import { menuItems, categories, MenuItem } from "@/lib/data/menu";
 import { CategoryTabs } from "@/components/menu/category-tabs";
 import { MenuCard } from "@/components/menu/menu-card";
+import { MenuListItem } from "@/components/menu/MenuListItem";
 import { MenuItemModal } from "@/components/menu/MenuItemModal";
 import { useCartStore, selectTotalItems, selectTotalPrice } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
+
+const LIST_CATEGORIES = [
+  "fastfood",
+  "beer-sets",
+  "drinks",
+  "desserts",
+  "noodles",
+  "sauces",
+];
+
+const isListCategory = (categoryId: string) =>
+  LIST_CATEGORIES.includes(categoryId);
 
 export default function MenuPage() {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -136,10 +149,27 @@ export default function MenuPage() {
         {isSearching ? (
           <>
             {searchResults.length > 0 ? (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                {searchResults.map((item) => (
-                  <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
-                ))}
+              <div className="space-y-3">
+                {/* Карточки для категорий с фото */}
+                {searchResults.some((i) => !isListCategory(i.category)) && (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                    {searchResults
+                      .filter((i) => !isListCategory(i.category))
+                      .map((item) => (
+                        <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
+                      ))}
+                  </div>
+                )}
+                {/* Список для категорий без фото */}
+                {searchResults.some((i) => isListCategory(i.category)) && (
+                  <div className="bg-white rounded-2xl border border-gray-100 px-4">
+                    {searchResults
+                      .filter((i) => isListCategory(i.category))
+                      .map((item) => (
+                        <MenuListItem key={item.id} item={item} />
+                      ))}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center py-20 text-muted-foreground">
@@ -166,21 +196,37 @@ export default function MenuPage() {
                     {group.items.length}
                   </span>
                 </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                  {group.items.map((item) => (
-                    <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
-                  ))}
-                </div>
+                {isListCategory(group.id) ? (
+                  <div className="bg-white rounded-2xl border border-gray-100 px-4">
+                    {group.items.map((item) => (
+                      <MenuListItem key={item.id} item={item} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                    {group.items.map((item) => (
+                      <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
+                    ))}
+                  </div>
+                )}
               </section>
             ))}
           </div>
         ) : (
           /* Одна категория */
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {filteredItems.map((item) => (
-              <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
-            ))}
-          </div>
+          isListCategory(activeFilter) ? (
+            <div className="bg-white rounded-2xl border border-gray-100 px-4">
+              {filteredItems.map((item) => (
+                <MenuListItem key={item.id} item={item} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {filteredItems.map((item) => (
+                <MenuCard key={item.id} item={item} onOpenModal={setModalItem} />
+              ))}
+            </div>
+          )
         )}
       </div>
 
