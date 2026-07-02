@@ -88,7 +88,7 @@ export default function DeliveryPage() {
       </div>
 
       {/* Карта */}
-      <h2 className="text-xl font-bold mb-4">Проверить адрес доставки</h2>
+      <h2 className="text-xl font-bold mb-4">Зоны доставки</h2>
       <DeliveryMap />
     </div>
   );

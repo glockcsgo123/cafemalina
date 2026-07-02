@@ -1,14 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   CAFE_COORDS,
   DELIVERY_ZONES,
-  geocodeAddress,
-  getDeliveryZone,
-  type DeliveryZone,
 } from "@/lib/delivery";
-import { Search, MapPin, CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 declare global {
   interface Window {
@@ -21,14 +17,6 @@ export function DeliveryMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapInstance = useRef<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const userPinRef = useRef<any>(null);
-  const [address, setAddress] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{
-    zone: DeliveryZone | null;
-    found: boolean;
-  } | null>(null);
 
   useEffect(() => {
     const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
@@ -114,51 +102,8 @@ export function DeliveryMap() {
         try { mapInstance.current.destroy(); } catch { /* ignore */ }
         mapInstance.current = null;
       }
-      userPinRef.current = null;
     };
   }, []);
-
-  async function checkAddress() {
-    if (!address.trim()) return;
-    setLoading(true);
-    setResult(null);
-
-    const coords = await geocodeAddress(address);
-    if (!coords) {
-      setResult({ zone: null, found: false });
-      setLoading(false);
-      return;
-    }
-
-    const zone = getDeliveryZone(coords.lat, coords.lng);
-    setResult({ zone, found: true });
-
-    if (mapInstance.current && window.ymaps) {
-      if (userPinRef.current) {
-        mapInstance.current.geoObjects.remove(userPinRef.current);
-      }
-      const pin = new window.ymaps.Placemark(
-        [coords.lat, coords.lng],
-        {
-          balloonContent: zone
-            ? `${zone.label} — от ${zone.minOrder.toLocaleString("ru")} ₽`
-            : "Вне зоны доставки",
-        },
-        {
-          preset: zone
-            ? "islands#blueCircleDotIcon"
-            : "islands#grayCircleDotIcon",
-        },
-      );
-      mapInstance.current.geoObjects.add(pin);
-      userPinRef.current = pin;
-      mapInstance.current.setCenter([coords.lat, coords.lng], 12, {
-        duration: 400,
-      });
-    }
-
-    setLoading(false);
-  }
 
   return (
     <div className="space-y-4">
@@ -185,73 +130,7 @@ export function DeliveryMap() {
         ))}
       </div>
 
-      {/* Поле проверки адреса */}
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && checkAddress()}
-            placeholder="Введите ваш адрес..."
-            className="w-full pl-10 pr-4 h-11 rounded-xl border border-border text-sm focus:outline-none focus:border-malina-500 focus:ring-2 focus:ring-malina-500/20 bg-card"
-          />
-        </div>
-        <button
-          onClick={checkAddress}
-          disabled={loading || !address.trim()}
-          className="flex items-center gap-2 px-4 h-11 rounded-xl bg-malina-500 text-white text-sm font-semibold disabled:opacity-50 hover:bg-malina-600 transition-colors"
-        >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Search className="h-4 w-4" />
-          )}
-          Проверить
-        </button>
-      </div>
-
-      {/* Результат проверки */}
-      {result && (
-        <div
-          className={`flex items-start gap-3 p-4 rounded-xl border ${
-            result.zone
-              ? "bg-green-50 border-green-200"
-              : "bg-red-50 border-red-200"
-          }`}
-        >
-          {result.zone ? (
-            <>
-              <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-green-800 text-sm">Доставляем!</p>
-                <p className="text-sm text-green-700">
-                  {result.zone.label} · минимальный заказ{" "}
-                  <strong>{result.zone.minOrder.toLocaleString("ru")} ₽</strong>
-                </p>
-              </div>
-            </>
-          ) : (
-            <>
-              <XCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-red-800 text-sm">
-                  {result.found ? "Адрес вне зоны доставки" : "Адрес не найден"}
-                </p>
-                <p className="text-sm text-red-700">
-                  Позвоните нам:{" "}
-                  <a href="tel:+79107403111" className="font-medium underline">
-                    +7 (910) 740-31-11
-                  </a>
-                </p>
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* Карта — без overflow-hidden, иначе balloon'ы обрезаются */}
+      {/* Карта */}
       <div
         ref={mapRef}
         className="w-full h-[420px] rounded-2xl border border-border"
