@@ -1640,7 +1640,7 @@ export const menuItems: MenuItem[] = [
     description: "Филадельфия, Экстаз, Запечёный с лососем, Сяке маки, Хот с лососем",
     price: 1770,
     weight: "40шт/970г",
-    image: "/images/set-fila-2xl.jpg",
+    image: "/images/placeholder-roll.jpg",
     category: "sets",
   },
   {
